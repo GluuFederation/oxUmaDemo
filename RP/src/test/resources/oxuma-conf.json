@@ -1,0 +1,16 @@
+{
+    "authorizeUrl":"https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/authorize",
+    "tokenUrl":"https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/token",
+    "umaUserId":"mike",
+    "umaUserSecret":"secret",
+    "umaPatClientId":"@!1111!0008!FF81!2D39",
+    "umaPatClientSecret":"6213e9b9-c46d-4008-8af1-03f918a8ade4",
+    "umaAatClientId":"@!1111!0008!0068.3E20",
+    "umaAatClientSecret":"32c2fb17-409d-48a2-b793-a639c8ac6cb2",
+    "umaRedirectUri":"https://client.example.com/cb?foo=bar",
+    "umaAmHost":"seed.gluu.org",
+    "umaMetaDataUrl":"https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/uma-configuration",
+    "rsScope":"http://seed.gluu.org/oxuma-rs/ws/scope",
+    "rsHost":"seed.gluu.org",
+    "rsPhoneWsUrl": "http://127.0.0.1:8888/ws/phone"
+}

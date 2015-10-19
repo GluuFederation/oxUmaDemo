@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <display-name>oxUma Demo Resource Server</display-name>
+
+    <context-param>
+        <param-name>resteasy.servlet.mapping.prefix</param-name>
+        <param-value>/ws</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>Resteasy</servlet-name>
+        <servlet-class>
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        </servlet-class>
+        <init-param>
+            <param-name>resteasy.scan</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>resteasy.scan.resources</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>resteasy.scan.providers</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Resteasy</servlet-name>
+        <url-pattern>/ws/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>rsServiceServlet</servlet-name>
+        <servlet-class>org.xdi.uma.demo.rs.server.RsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rsServiceServlet</servlet-name>
+        <url-pattern>/rs/rsService</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>rs.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
