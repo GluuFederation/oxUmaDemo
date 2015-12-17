@@ -38,16 +38,20 @@ public class RptPreProcessInterceptor implements PreProcessInterceptor {
             final HttpHeaders httpHeaders = request.getHttpHeaders();
             if (httpHeaders != null) {
                 final List<String> authHeaders = httpHeaders.getRequestHeader("Authorization");
+                final List<String> asHeaders = httpHeaders.getRequestHeader("AsHost");
                 if (authHeaders != null && !authHeaders.isEmpty()) {
                     final String authorization = authHeaders.get(0);
-                    final String token = Utils.getTokenFromAuthorization(authorization);
-                    if (StringUtils.isNotBlank(token)) {
+                    final String rpt = Utils.getRptFromAuthorization(authorization);
+                    if (StringUtils.isNotBlank(rpt)) {
                         LOG.debug("RPT present in request");
-                        final RptIntrospectionResponse status = requestRptStatus(token);
+                        final RptIntrospectionResponse status = requestRptStatus(rpt);
                         if (status != null && status.getActive()) {
                             request.setAttribute(RPT_STATUS_ATTR_NAME, status);
                             return null;
                         }
+                    } else if (asHeaders != null && !asHeaders.isEmpty()) {
+                        final String asHost = asHeaders.get(0);
+                        // todo : register ticket
                     }
                 }
             }

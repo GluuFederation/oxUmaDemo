@@ -39,9 +39,9 @@ public class Utils {
                 build();
     }
 
-    public static String getTokenFromAuthorization(String p_authorization) {
-        if (StringHelper.isNotEmpty(p_authorization) && p_authorization.startsWith("Bearer ")) {
-            return p_authorization.substring("Bearer ".length());
+    public static String getRptFromAuthorization(String authorizationHeader) {
+        if (StringHelper.isNotEmpty(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring("Bearer ".length());
         }
         return null;
     }
