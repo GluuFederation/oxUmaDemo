@@ -29,30 +29,24 @@ public class PhoneService {
 
     private static final PhoneService INSTANCE = new PhoneService();
 
-    private volatile PhoneClientService m_service = null;
+    private volatile PhoneClientService service = null;
 
     private PhoneService() {
+        final Configuration c = Configuration.getInstance();
+        service = ProxyFactory.create(PhoneClientService.class, c.getRsPhoneWsUrl());
     }
 
     public static PhoneService getInstance() {
         return INSTANCE;
     }
 
-    private PhoneClientService createClientService(String p_endpoint) {
-        return ProxyFactory.create(PhoneClientService.class, p_endpoint);
-    }
-
-    public synchronized PhoneClientService service() {
-        if (m_service == null) {
-            final Configuration c = Configuration.getInstance();
-            m_service = createClientService(c.getRsPhoneWsUrl());
-        }
-        return m_service;
+    public PhoneClientService service() {
+        return service;
     }
 
     public Phones getPhonesVerbose(String p_rpt) {
         LOG.debug("Try to get (view) phones... , rpt:" + p_rpt);
-        final Phones phones = service().getPhones("Bearer " + p_rpt);
+        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().getRsHost());
         if (phones != null) {
             LOG.debug("Got phones from client: " + CommonUtils.asJsonSilently(phones));
             return phones;
@@ -108,7 +102,7 @@ public class PhoneService {
 
     private boolean addPhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to add phone number: " + p_phone);
-        final RsResponse response = service().add("Bearer " + p_rpt, p_phone);
+        final RsResponse response = service().add("Bearer " + p_rpt, Configuration.getInstance().getRsHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone added successfully. Phone added: " + p_phone);
             return response.getStatus() == Status.CREATED;
@@ -134,7 +128,7 @@ public class PhoneService {
 
     private boolean removePhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to remove phone numbers: " + p_phone);
-        final RsResponse response = service().remove("Bearer " + p_rpt, p_phone);
+        final RsResponse response = service().remove("Bearer " + p_rpt, Configuration.getInstance().getRsHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone removed successfully. Phone: " + p_phone);
             return response.getStatus() == Status.DELETED;
