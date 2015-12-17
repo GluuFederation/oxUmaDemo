@@ -5,12 +5,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
-import org.xdi.oxauth.client.uma.AuthorizationRequestService;
+import org.python.google.common.base.Strings;
+import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.AuthorizationResponse;
-import org.xdi.oxauth.model.uma.MetadataConfiguration;
 import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
+import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
+import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;
@@ -43,7 +44,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         try {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
-                final MetadataConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+                final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
                 if (umaAmConfiguration != null) {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
                     LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
@@ -153,13 +154,12 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
 
                         LOG.debug("Try to authorize RPT with ticket...");
-                        final AuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getAmConfiguration());
-                        final ClientResponse<AuthorizationResponse> clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
+                        final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
+                        final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                                 "Bearer " + aat,
                                 c.getUmaAmHost(),
                                 authorizationRequest);
-                        final AuthorizationResponse authorizationResponse = clientAuthorizationResponse.getEntity();
-                        if (authorizationResponse != null) {
+                        if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                             LOG.debug("RPT is authorized.");
 
                             final Phones phones = phoneService.getPhonesVerbose(getRpt());

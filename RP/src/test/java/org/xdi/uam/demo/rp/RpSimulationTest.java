@@ -2,16 +2,17 @@ package org.xdi.uam.demo.rp;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
+import org.python.google.common.base.Strings;
 import org.testng.annotations.Test;
-import org.xdi.oxauth.client.uma.AuthorizationRequestService;
-import org.xdi.oxauth.client.uma.RequesterPermissionTokenService;
+import org.xdi.oxauth.client.uma.CreateRptService;
+import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.client.uma.wrapper.UmaClient;
-import org.xdi.oxauth.model.uma.AuthorizationResponse;
-import org.xdi.oxauth.model.uma.MetadataConfiguration;
-import org.xdi.oxauth.model.uma.RequesterPermissionTokenResponse;
+import org.xdi.oxauth.model.uma.RPTResponse;
 import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
+import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
+import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.Configuration;
@@ -35,7 +36,7 @@ public class RpSimulationTest {
     public void testRpt() {
         final Configuration c = Configuration.getInstance();
         if (c != null) {
-            final MetadataConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+            final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
             if (umaAmConfiguration != null) {
                 InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
             }
@@ -56,18 +57,18 @@ public class RpSimulationTest {
         }
 
         final String umaMetaDataUrl = "https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/uma-configuration";
-        final MetadataConfiguration metadataConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(umaMetaDataUrl).getMetadataConfiguration();
-        final RequesterPermissionTokenService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(metadataConfiguration);
+        final UmaConfiguration umaConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(umaMetaDataUrl).getMetadataConfiguration();
+        final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(umaConfiguration);
         final Configuration c = Configuration.getInstance();
 
         final Token aat = UmaClient.requestAat(c.getAuthorizeUrl(), c.getTokenUrl(), c.getUmaUserId(), c.getUmaUserSecret(),
                 c.getUmaAatClientId(), c.getUmaAatClientSecret(), c.getUmaRedirectUri());
 
         if (aat != null) {
-            final RequesterPermissionTokenResponse rptResponse = rptService.getRequesterPermissionToken("Bearer " + aat.getAccessToken(), c.getUmaAmHost());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat.getAccessToken(), c.getUmaAmHost());
 
             try {
-                doCall(rptResponse.getToken(), aat.getAccessToken());
+                doCall(rptResponse.getRpt(), aat.getAccessToken());
             } catch (ClientResponseFailure e) {
                 final ClientResponse<ResourceSetPermissionTicket> response = e.getResponse();
                 if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
@@ -75,20 +76,19 @@ public class RpSimulationTest {
                     final ResourceSetPermissionTicket ticketWrapper = response.getEntity(ResourceSetPermissionTicket.class);
                     final String ticket = ticketWrapper.getTicket();
                     System.out.println("RS returns permission ticket: " + ticket);
-                    final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(rptResponse.getToken(), ticket);
+                    final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(rptResponse.getRpt(), ticket);
 
 
                     System.out.println("Try to authorize RPT with ticket...");
-                    final AuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(metadataConfiguration);
-                    final ClientResponse<AuthorizationResponse> clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
+                    final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(umaConfiguration);
+                    final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                             "Bearer " + aat.getAccessToken(),
                             c.getUmaAmHost(),
                             authorizationRequest);
-                    final AuthorizationResponse authorizationResponse = clientAuthorizationResponse.getEntity();
-                    if (authorizationResponse != null) {
+                    if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                         System.out.println("RPT is authorized.");
 
-                        doCall(rptResponse.getToken(), aat.getAccessToken());
+                        doCall(clientAuthorizationResponse.getRpt(), aat.getAccessToken());
                     }
                 }
             }

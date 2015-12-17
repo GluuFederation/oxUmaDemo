@@ -1,8 +1,8 @@
 package org.xdi.uma.demo.rs.server.ws;
 
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.model.uma.ResourceSetPermissionRequest;
-import org.xdi.oxauth.model.uma.RptStatusResponse;
+import org.xdi.oxauth.model.uma.RegisterPermissionRequest;
+import org.xdi.oxauth.model.uma.RptIntrospectionResponse;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.RsResponse;
 import org.xdi.uma.demo.common.gwt.Status;
@@ -130,8 +130,8 @@ public class PhoneWS {
     private Pair<Boolean, Response> hasEnoughPermissions(HttpServletRequest p_request, List<ScopeType> p_scopes) {
         final PermissionService permissionService = PermissionService.getInstance();
         final String resourceId = getResource().getId();
-        final RptStatusResponse status = Utils.extract(p_request);
-        final List<ResourceSetPermissionRequest> permissions = status.getPermissions();
+        final RptIntrospectionResponse status = Utils.extract(p_request);
+        final List<RegisterPermissionRequest> permissions = status.getPermissions();
         return permissionService.hasEnoughPermissionsWithTicketRegistration(permissions, resourceId, p_scopes);
     }
 

@@ -5,15 +5,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.uma.ResourceSetRegistrationService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.MetadataConfiguration;
 import org.xdi.oxauth.model.uma.ResourceSet;
 import org.xdi.oxauth.model.uma.ResourceSetStatus;
+import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
-import org.xdi.uma.demo.rs.client.Service;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
+import org.xdi.uma.demo.rs.client.Service;
 import org.xdi.uma.demo.rs.shared.Resource;
 import org.xdi.uma.demo.rs.shared.ResourceType;
 import org.xdi.uma.demo.rs.shared.ScopeType;
@@ -40,7 +40,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         try {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
-                final MetadataConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+                final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
                 if (umaAmConfiguration != null) {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
                     LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
@@ -74,8 +74,8 @@ public class RsServlet extends RemoteServiceServlet implements Service {
                 resourceSet.setName("Gluu phones");
                 resourceSet.setScopes(ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values())));
 
-                final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getAmConfiguration());
-                final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), String.valueOf(System.currentTimeMillis()), resourceSet);
+                final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration());
+                final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
                 if (status != null && StringUtils.isNotBlank(status.getId())) {
                     final Resource result = new Resource();
                     result.setId(status.getId());

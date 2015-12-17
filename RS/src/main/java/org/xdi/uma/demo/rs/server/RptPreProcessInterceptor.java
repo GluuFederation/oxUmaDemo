@@ -10,8 +10,7 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.xdi.oxauth.client.uma.RptStatusService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.RptStatusRequest;
-import org.xdi.oxauth.model.uma.RptStatusResponse;
+import org.xdi.oxauth.model.uma.RptIntrospectionResponse;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
 
@@ -44,7 +43,7 @@ public class RptPreProcessInterceptor implements PreProcessInterceptor {
                     final String token = Utils.getTokenFromAuthorization(authorization);
                     if (StringUtils.isNotBlank(token)) {
                         LOG.debug("RPT present in request");
-                        final RptStatusResponse status = requestRptStatus(token);
+                        final RptIntrospectionResponse status = requestRptStatus(token);
                         if (status != null && status.getActive()) {
                             request.setAttribute(RPT_STATUS_ATTR_NAME, status);
                             return null;
@@ -68,14 +67,12 @@ public class RptPreProcessInterceptor implements PreProcessInterceptor {
         return (ServerResponse) Utils.unauthorizedResponse();
     }
 
-    public static RptStatusResponse requestRptStatus(String p_rpt) {
+    public static RptIntrospectionResponse requestRptStatus(String p_rpt) {
         if (StringUtils.isNotBlank(p_rpt)) {
-            final RptStatusRequest request = new RptStatusRequest();
-            request.setRpt(p_rpt);
 
             LOG.debug("Request RPT status...");
-            final RptStatusService rptStatusService = UmaClientFactory.instance().createRptStatusService(CommonUtils.getAmConfiguration());
-            final RptStatusResponse status = rptStatusService.requestRptStatus("Bearer " + Utils.getPat().getAccessToken(), request);
+            final RptStatusService rptStatusService = UmaClientFactory.instance().createRptStatusService(CommonUtils.getUmaConfiguration());
+            final RptIntrospectionResponse status = rptStatusService.requestRptStatus("Bearer " + Utils.getPat().getAccessToken(), p_rpt, "");
             if (status != null) {
                 LOG.debug("RPT status: " + CommonUtils.asJsonSilently(status));
                 return status;

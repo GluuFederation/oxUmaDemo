@@ -2,7 +2,7 @@ package org.xdi.uma.demo.rs.server;
 
 import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.uma.wrapper.UmaClient;
-import org.xdi.oxauth.model.uma.RptStatusResponse;
+import org.xdi.oxauth.model.uma.RptIntrospectionResponse;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.ref.IPat;
@@ -28,8 +28,8 @@ public class Utils {
     private Utils() {
     }
 
-    public static RptStatusResponse extract(HttpServletRequest p_request) {
-        return (RptStatusResponse) p_request.getAttribute(RptPreProcessInterceptor.RPT_STATUS_ATTR_NAME);
+    public static RptIntrospectionResponse extract(HttpServletRequest p_request) {
+        return (RptIntrospectionResponse) p_request.getAttribute(RptPreProcessInterceptor.RPT_STATUS_ATTR_NAME);
     }
 
     public static Response unauthorizedResponse() {
@@ -62,8 +62,7 @@ public class Utils {
         try {
             final Configuration c = Configuration.getInstance();
             LOG.trace("Try to obtain PAT token...");
-            final Token patToken = UmaClient.requestPat(c.getAuthorizeUrl(), c.getTokenUrl(),
-                    c.getUmaUserId(), c.getUmaUserSecret(), c.getUmaPatClientId(), c.getUmaPatClientSecret(), c.getUmaRedirectUri());
+            final Token patToken = UmaClient.requestPat(c.getTokenUrl(), c.getUmaPatClientId(), c.getUmaPatClientSecret());
             if (patToken != null) {
                 InterfaceRegistry.put(IPat.class, patToken);
                 LOG.trace("PAT token is successfully obtained.");

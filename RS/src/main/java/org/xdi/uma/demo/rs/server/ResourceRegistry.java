@@ -56,8 +56,8 @@ public class ResourceRegistry {
             resourceSet.setName("Gluu phones");
             resourceSet.setScopes(ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values())));
 
-            final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getAmConfiguration());
-            final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), String.valueOf(System.currentTimeMillis()), resourceSet);
+            final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration());
+            final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
             if (status != null && StringUtils.isNotBlank(status.getId())) {
                 final Resource result = new Resource();
                 result.setId(status.getId());

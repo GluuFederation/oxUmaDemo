@@ -3,9 +3,9 @@ package org.xdi.uma.demo.rs.server;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientResponseFailure;
-import org.xdi.oxauth.client.uma.ResourceSetPermissionRegistrationService;
+import org.xdi.oxauth.client.uma.PermissionRegistrationService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.ResourceSetPermissionRequest;
+import org.xdi.oxauth.model.uma.RegisterPermissionRequest;
 import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
@@ -33,9 +33,9 @@ public class PermissionService {
         return INSTANCE;
     }
 
-    public boolean hasEnoughPermissions(List<ResourceSetPermissionRequest> p_list, String p_resourceId, List<ScopeType> p_scopes) {
+    public boolean hasEnoughPermissions(List<RegisterPermissionRequest> p_list, String p_resourceId, List<ScopeType> p_scopes) {
         if (p_list != null && !p_list.isEmpty() && StringUtils.isNotBlank(p_resourceId)) {
-            for (ResourceSetPermissionRequest p : p_list) {
+            for (RegisterPermissionRequest p : p_list) {
                 if (p.getResourceSetId().equals(p_resourceId)) {
                     final boolean hasScope = ScopeService.getInstance().hasAnyScope(p.getScopes(), p_scopes);
                     if (hasScope) {
@@ -51,17 +51,17 @@ public class PermissionService {
         try {
             final ScopeService scopeService = ScopeService.getInstance();
 
-            final ResourceSetPermissionRequest request = new ResourceSetPermissionRequest();
+            final RegisterPermissionRequest request = new RegisterPermissionRequest();
             request.setResourceSetId(p_resourceId);
             request.setScopes(scopeService.getScopesAsUrls(p_scopes));
 
-            final ResourceSetPermissionRegistrationService permissionRegistrationService = UmaClientFactory.instance().createResourceSetPermissionRegistrationService(CommonUtils.getAmConfiguration());
+            final PermissionRegistrationService permissionRegistrationService = UmaClientFactory.instance().createResourceSetPermissionRegistrationService(CommonUtils.getUmaConfiguration());
 
 
             LOG.debug("Try to register permission on AM with request: " + CommonUtils.asJsonSilently(request));
             final Configuration c = Configuration.getInstance();
             final ResourceSetPermissionTicket t = permissionRegistrationService.registerResourceSetPermission(
-                    "Bearer " + Utils.getPat().getAccessToken(), c.getUmaAmHost(), c.getRsHost(), request);
+                    "Bearer " + Utils.getPat().getAccessToken(), c.getUmaAmHost(), request);
             if (t != null) {
                 LOG.debug("Permission registered successfully, ticket: " + t.getTicket());
                 return t.getTicket();
@@ -73,7 +73,7 @@ public class PermissionService {
         return "";
     }
 
-    public Pair<Boolean, Response> hasEnoughPermissionsWithTicketRegistration(List<ResourceSetPermissionRequest> p_list, String p_resourceId, List<ScopeType> p_scopes) {
+    public Pair<Boolean, Response> hasEnoughPermissionsWithTicketRegistration(List<RegisterPermissionRequest> p_list, String p_resourceId, List<ScopeType> p_scopes) {
         final Pair<Boolean, Response> result = new Pair<Boolean, Response>(false, null);
         if (hasEnoughPermissions(p_list, p_resourceId, p_scopes)) {
             result.setFirst(true);

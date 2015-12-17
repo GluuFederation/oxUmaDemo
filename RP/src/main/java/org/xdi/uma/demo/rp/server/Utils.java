@@ -2,9 +2,9 @@ package org.xdi.uma.demo.rp.server;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.client.uma.RequesterPermissionTokenService;
+import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.RequesterPermissionTokenResponse;
+import org.xdi.oxauth.model.uma.RPTResponse;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.ref.IRpt;
@@ -64,10 +64,10 @@ public class Utils {
         LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + p_aat);
         try {
             final Configuration c = Configuration.getInstance();
-            final RequesterPermissionTokenService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getAmConfiguration());
-            final RequesterPermissionTokenResponse rptResponse = rptService.getRequesterPermissionToken("Bearer " + p_aat, c.getUmaAmHost());
-            if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getToken())) {
-                final String result = rptResponse.getToken();
+            final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + p_aat, c.getUmaAmHost());
+            if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
+                final String result = rptResponse.getRpt();
                 InterfaceRegistry.put(IRpt.class, result);
                 LOG.debug("RPT is successfully obtained from AM. RPT: " + result);
                 return result;

@@ -4,11 +4,12 @@ import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.jboss.resteasy.client.ProxyFactory;
-import org.xdi.oxauth.client.uma.AuthorizationRequestService;
+import org.python.google.common.base.Strings;
+import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.AuthorizationResponse;
 import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
+import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.RsResponse;
 import org.xdi.uma.demo.common.gwt.Status;
@@ -89,13 +90,12 @@ public class PhoneService {
 
             final Configuration c = Configuration.getInstance();
             LOG.debug("Try to authorize RPT with ticket...");
-            final AuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getAmConfiguration());
-            final ClientResponse<AuthorizationResponse> clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
+            final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
+            final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                     "Bearer " + p_aat,
                     c.getUmaAmHost(),
                     authorizationRequest);
-            final AuthorizationResponse authorizationResponse = clientAuthorizationResponse.getEntity();
-            if (authorizationResponse != null) {
+            if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                 LOG.debug("RPT is authorized.");
                 return true;
             }
