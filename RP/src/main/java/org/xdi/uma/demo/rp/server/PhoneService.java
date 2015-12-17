@@ -46,7 +46,7 @@ public class PhoneService {
 
     public Phones getPhonesVerbose(String p_rpt) {
         LOG.debug("Try to get (view) phones... , rpt:" + p_rpt);
-        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().getRsHost());
+        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost());
         if (phones != null) {
             LOG.debug("Got phones from client: " + CommonUtils.asJsonSilently(phones));
             return phones;
@@ -102,7 +102,7 @@ public class PhoneService {
 
     private boolean addPhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to add phone number: " + p_phone);
-        final RsResponse response = service().add("Bearer " + p_rpt, Configuration.getInstance().getRsHost(), p_phone);
+        final RsResponse response = service().add("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone added successfully. Phone added: " + p_phone);
             return response.getStatus() == Status.CREATED;
@@ -128,7 +128,7 @@ public class PhoneService {
 
     private boolean removePhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to remove phone numbers: " + p_phone);
-        final RsResponse response = service().remove("Bearer " + p_rpt, Configuration.getInstance().getRsHost(), p_phone);
+        final RsResponse response = service().remove("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone removed successfully. Phone: " + p_phone);
             return response.getStatus() == Status.DELETED;

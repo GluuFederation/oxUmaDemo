@@ -19,15 +19,15 @@ import javax.ws.rs.Produces;
 public interface PhoneClientService {
     @GET
     @Produces({"application/json"})
-    public Phones getPhones(@HeaderParam("Authorization") String authorization, @HeaderParam("Host") String rsHost);
+    public Phones getPhones(@HeaderParam("Authorization") String authorization, @HeaderParam("AsHost") String asHost);
 
     @PUT
     @Path("{phone}")
     @Produces({"application/json"})
-    public RsResponse add(@HeaderParam("Authorization") String authorization, @HeaderParam("Host") String rsHost, @PathParam("phone") String phone);
+    public RsResponse add(@HeaderParam("Authorization") String authorization, @HeaderParam("AsHost") String asHost, @PathParam("phone") String phone);
 
     @DELETE
     @Path("{phone}")
     @Produces({"application/json"})
-    public RsResponse remove(@HeaderParam("Authorization") String authorization, @HeaderParam("Host") String rsHost, @PathParam("phone") String phone);
+    public RsResponse remove(@HeaderParam("Authorization") String authorization, @HeaderParam("AsHost") String asHost, @PathParam("phone") String phone);
 }
