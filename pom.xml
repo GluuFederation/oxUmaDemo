@@ -20,6 +20,7 @@
         <gxt.version>3.0.1</gxt.version>
         <gwt.version>2.5.0</gwt.version>
         <oxauth.version>3.0.3-SNAPSHOT</oxauth.version>
+        <oxd.version>3.0.5-SNAPSHOT</oxd.version>
     </properties>
 
     <prerequisites>
@@ -58,6 +59,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.xdi</groupId>
+                <artifactId>oxd-rs-protect</artifactId>
+                <version>${oxd.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.xdi</groupId>
                 <artifactId>oxGwt</artifactId>

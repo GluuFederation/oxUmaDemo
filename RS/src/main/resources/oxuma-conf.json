@@ -1,5 +1,5 @@
 {
-    "authorizeUrl":"https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/authorize",
+    "authorizeUrl":"https://ce-dev.gluu.org/oxauth/seam/resource/restv1/oxauth/authorize",
     "tokenUrl":"https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/token",
     "umaUserId":"mike",
     "umaUserSecret":"secret",

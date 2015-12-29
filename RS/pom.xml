@@ -96,6 +96,10 @@
     <dependencies>
         <dependency>
             <groupId>org.xdi</groupId>
+            <artifactId>oxd-rs-protect</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.xdi</groupId>
             <artifactId>oxGwt</artifactId>
         </dependency>
         <dependency>
