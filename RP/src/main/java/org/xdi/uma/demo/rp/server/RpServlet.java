@@ -16,6 +16,7 @@ import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
+import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rp.client.LoginController;
 import org.xdi.uma.demo.rp.client.Service;
@@ -44,7 +45,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         try {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
-                final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+                final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
                 if (umaAmConfiguration != null) {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
                     LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));

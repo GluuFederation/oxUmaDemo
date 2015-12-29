@@ -12,6 +12,7 @@ import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
+import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rs.client.Service;
 import org.xdi.uma.demo.rs.shared.Resource;
@@ -40,10 +41,10 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         try {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
-                final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+                final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
                 if (umaAmConfiguration != null) {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
-                    LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
+                    LOG.info("Loaded UMA configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
 
                     final Resource resource = registerResource();
                     ResourceRegistry.getInstance().put(ResourceType.PHONE, resource);
@@ -107,7 +108,6 @@ public class RsServlet extends RemoteServiceServlet implements Service {
     @Override
     public void clearLogs() {
         CommonUtils.getLogList().clear();
-
     }
 
 }
