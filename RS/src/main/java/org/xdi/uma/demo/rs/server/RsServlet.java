@@ -71,11 +71,13 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         try {
             final Token pat = Utils.getPat();
             if (pat != null) {
-                final ResourceSet resourceSet = new ResourceSet();
-                resourceSet.setName("Gluu phones");
-                resourceSet.setScopes(ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values())));
+                final List<String> scopesAsUrls = ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values()));
 
-                final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration());
+                final ResourceSet resourceSet = new ResourceSet();
+                resourceSet.setName("oxUma Demo phones");
+                resourceSet.setScopes(scopesAsUrls);
+
+                final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
                 final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
                 if (status != null && StringUtils.isNotBlank(status.getId())) {
                     final Resource result = new Resource();

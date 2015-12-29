@@ -1,7 +1,6 @@
 package org.xdi.uma.demo.common.server;
 
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.uma.demo.common.server.ref.ILogList;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
@@ -31,7 +30,7 @@ public class CommonUtils {
         if (result == null) {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
-                final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
+                final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
                 if (umaAmConfiguration != null) {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
                 }

@@ -1,10 +1,14 @@
 package org.xdi.uma.demo.rs.server;
 
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.client.uma.wrapper.UmaClient;
+import org.xdi.oxauth.client.TokenClient;
+import org.xdi.oxauth.client.TokenResponse;
 import org.xdi.oxauth.model.uma.RptIntrospectionResponse;
+import org.xdi.oxauth.model.uma.UmaScopeType;
 import org.xdi.oxauth.model.uma.wrapper.Token;
+import org.xdi.oxauth.model.util.Util;
 import org.xdi.uma.demo.common.server.Configuration;
+import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IPat;
 import org.xdi.uma.demo.rs.shared.ResourceType;
 import org.xdi.uma.demo.rs.shared.ScopeType;
@@ -62,7 +66,7 @@ public class Utils {
         try {
             final Configuration c = Configuration.getInstance();
             LOG.trace("Try to obtain PAT token...");
-            final Token patToken = UmaClient.requestPat(c.getTokenUrl(), c.getUmaPatClientId(), c.getUmaPatClientSecret());
+            final Token patToken = requestPat(c.getTokenUrl(), c.getUmaPatClientId(), c.getUmaPatClientSecret());
             if (patToken != null) {
                 InterfaceRegistry.put(IPat.class, patToken);
                 LOG.trace("PAT token is successfully obtained.");
@@ -72,6 +76,34 @@ public class Utils {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
+        return null;
+    }
+
+    public static Token requestPat(final String tokenUrl, final String umaClientId, final String umaClientSecret, String... scopeArray) throws Exception {
+        return request(tokenUrl, umaClientId, umaClientSecret, UmaScopeType.PROTECTION, scopeArray);
+    }
+
+    public static Token request(final String tokenUrl, final String umaClientId, final String umaClientSecret, UmaScopeType scopeType, String... scopeArray) throws Exception {
+
+        String scope = scopeType.getValue();
+        if (scopeArray != null && scopeArray.length > 0) {
+            for (String s : scopeArray) {
+                scope = scope + " " + s;
+            }
+        }
+
+        TokenClient tokenClient = new TokenClient(tokenUrl);
+        tokenClient.setExecutor(Uma.getClientExecutor());
+        TokenResponse response = tokenClient.execClientCredentialsGrant(scope, umaClientId, umaClientSecret);
+
+        if (response.getStatus() == 200) {
+            final String accessToken = response.getAccessToken();
+            final Integer expiresIn = response.getExpiresIn();
+            if (Util.allNotBlank(accessToken)) {
+                return new Token(null, null, accessToken, scopeType.getValue(), expiresIn);
+            }
+        }
+
         return null;
     }
 }

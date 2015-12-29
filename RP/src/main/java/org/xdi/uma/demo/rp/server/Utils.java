@@ -7,6 +7,7 @@ import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.RPTResponse;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
+import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IRpt;
 import org.xdi.util.InterfaceRegistry;
 
@@ -52,10 +53,10 @@ public class Utils {
 //        return getRpt(getAat());
 //    }
 
-    public static String getRpt(String p_aat) {
+    public static String getRpt(String aat) {
         final String rpt = InterfaceRegistry.get(IRpt.class);
         if (rpt == null) {
-            return obtainRpt(p_aat);
+            return obtainRpt(aat);
         }
         return rpt;
     }
@@ -64,7 +65,7 @@ public class Utils {
         LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + aat);
         try {
             final Configuration c = Configuration.getInstance();
-            final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration());
+            final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
             final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.getUmaAmHost());
             if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
                 final String result = rptResponse.getRpt();
