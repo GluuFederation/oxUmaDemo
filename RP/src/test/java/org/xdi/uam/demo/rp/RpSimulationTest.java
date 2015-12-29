@@ -43,12 +43,11 @@ public class RpSimulationTest {
         }
 
 
-        final String aat = "8a740bcb-b8e2-4301-a124-7d9b58582285";
-        Utils.obtainRpt(aat);
+        Utils.obtainRpt("8a740bcb-b8e2-4301-a124-7d9b58582285");
     }
 
     @Test
-    public void test() throws Exception {
+    public void workflow() throws Exception {
 
         try {
             doCall("", "");
@@ -56,8 +55,7 @@ public class RpSimulationTest {
             System.out.println("Response: unauthorized.");
         }
 
-        final String umaMetaDataUrl = "https://seed.gluu.org/oxauth/seam/resource/restv1/oxauth/uma-configuration";
-        final UmaConfiguration umaConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(umaMetaDataUrl).getMetadataConfiguration();
+        final UmaConfiguration umaConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(Configuration.getInstance().getUmaMetaDataUrl()).getMetadataConfiguration();
         final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(umaConfiguration);
         final Configuration c = Configuration.getInstance();
 

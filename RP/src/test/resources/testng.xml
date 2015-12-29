@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="RP Suite" parallel="false">
+
+    <test name="RP Simulation Test" enabled="true">
+        <classes>
+            <class name="org.xdi.uam.demo.rp.RpSimulationTest"/>
+        </classes>
+    </test>
+
+</suite>

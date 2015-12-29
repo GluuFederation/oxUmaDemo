@@ -60,12 +60,12 @@ public class Utils {
         return rpt;
     }
 
-    public static String obtainRpt(String p_aat) {
-        LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + p_aat);
+    public static String obtainRpt(String aat) {
+        LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + aat);
         try {
             final Configuration c = Configuration.getInstance();
             final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration());
-            final RPTResponse rptResponse = rptService.createRPT("Bearer " + p_aat, c.getUmaAmHost());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.getUmaAmHost());
             if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
                 final String result = rptResponse.getRpt();
                 InterfaceRegistry.put(IRpt.class, result);

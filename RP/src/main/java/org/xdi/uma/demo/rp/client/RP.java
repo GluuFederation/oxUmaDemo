@@ -327,7 +327,7 @@ public class RP implements EntryPoint {
         final VerticalLayoutContainer v = new VerticalLayoutContainer();
         v.add(toolbar, new VerticalLayoutContainer.VerticalLayoutData(-1, -1, DEFAULT_MARGINS));
         v.add(new Label("Phone number(s):"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
-        v.add(new Label("(hosted by Resource Server on http://seed.gluu.org/)"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
+        v.add(new Label("(hosted by Resource Server on http://ce-dev.gluu.org/)"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
         v.add(list, new VerticalLayoutContainer.VerticalLayoutData(250, 450, DEFAULT_MARGINS));
 
         final ContentPanel container = new ContentPanel();
