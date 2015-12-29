@@ -1,5 +1,6 @@
 package org.xdi.uma.demo.rs.server;
 
+import com.google.common.base.Preconditions;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -67,9 +68,10 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public Resource registerResource() {
-        LOG.debug("Register resource");
+
         try {
             final Token pat = Utils.getPat();
+
             if (pat != null) {
                 final List<String> scopesAsUrls = ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values()));
 
@@ -77,16 +79,20 @@ public class RsServlet extends RemoteServiceServlet implements Service {
                 resourceSet.setName("oxUma Demo phones");
                 resourceSet.setScopes(scopesAsUrls);
 
+                LOG.debug("Register resource: " + CommonUtils.asJsonSilently(resourceSet));
+
                 final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
                 final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
-                if (status != null && StringUtils.isNotBlank(status.getId())) {
-                    final Resource result = new Resource();
-                    result.setId(status.getId());
-                    LOG.debug("Resource registered, resource id: " + status.getId());
-                    return result;
-                }
+
+                Preconditions.checkNotNull(status);
+                Preconditions.checkState(StringUtils.isNotBlank(status.getId()));
+
+                final Resource result = new Resource();
+                result.setId(status.getId());
+                LOG.debug("Resource registered, resource id: " + status.getId());
+                return result;
             } else {
-                LOG.debug("PAT token is null, unable to register resource set.");
+                LOG.debug("Unable to obtain PAT token. RS failed to protect resources by UMA.");
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
