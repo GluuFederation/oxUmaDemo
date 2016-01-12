@@ -13,6 +13,7 @@ import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
 import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.wrapper.Token;
+import org.xdi.uma.demo.common.gwt.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;
@@ -249,5 +250,15 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                 }
             }
         }
+    }
+
+    @Override
+    public Conf getConf() {
+        final Configuration serverConf = Configuration.getInstance();
+
+        Conf conf = new Conf();
+        conf.setAmHost(serverConf.getUmaAmHost());
+        conf.setRsHost(serverConf.getRsHost());
+        return conf;
     }
 }

@@ -1,6 +1,7 @@
 package org.xdi.uma.demo.rp.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.xdi.uma.demo.common.gwt.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 
@@ -33,4 +34,6 @@ public interface ServiceAsync {
     void getLoginUrl(AsyncCallback<String> async);
 
     void storeAat(String p_accessToken, AsyncCallback<Void> async);
+
+    void getConf(AsyncCallback<Conf> async);
 }

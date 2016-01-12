@@ -31,6 +31,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 import org.xdi.gwt.client.GwtUtils;
+import org.xdi.uma.demo.common.gwt.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.ui.ProgressDialog;
@@ -50,6 +51,7 @@ public class RP implements EntryPoint {
     private static final ServiceAsync SERVICE = GWT.create(Service.class);
     private static final TextArea TEXT_AREA = new TextArea();
     private static final EventBus EVENT_BUS = new SimpleEventBus();
+    private static Conf CONF;
     private final ListStore<String> m_store = new ListStore<String>(new ModelKeyProvider<String>() {
         @Override
         public String getKey(String item) {
@@ -63,12 +65,27 @@ public class RP implements EntryPoint {
     public void onModuleLoad() {
         initEventBus();
 
+        SERVICE.getConf(new AsyncCallback<Conf>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                GwtUtils.showError("Failed to load RP configuration.");
+            }
+
+            @Override
+            public void onSuccess(Conf conf) {
+                CONF = conf;
+                init();
+            }
+        });
+    }
+
+    private void init() {
         if (LoginController.hasAccessToken()) {
-                    showUI();
+            showUI();
         } else {
             LoginController.userLogin();
-                }
-            }
+        }
+    }
 
     private void initEventBus() {
         getEventBus().addHandler(LoginEvent.TYPE, new LoginEvent.Handler() {
@@ -327,7 +344,7 @@ public class RP implements EntryPoint {
         final VerticalLayoutContainer v = new VerticalLayoutContainer();
         v.add(toolbar, new VerticalLayoutContainer.VerticalLayoutData(-1, -1, DEFAULT_MARGINS));
         v.add(new Label("Phone number(s):"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
-        v.add(new Label("(hosted by Resource Server on http://ce-dev.gluu.org/)"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
+        v.add(new Label("(hosted by Resource Server on " + CONF.getRsHost()), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
         v.add(list, new VerticalLayoutContainer.VerticalLayoutData(250, 450, DEFAULT_MARGINS));
 
         final ContentPanel container = new ContentPanel();
@@ -371,8 +388,8 @@ public class RP implements EntryPoint {
 //                        refresh();
 //                    }
 //                });
-                    }
-                });
+            }
+        });
 
         final TextButton clearButton = new TextButton("Clear");
         clearButton.addSelectHandler(new SelectEvent.SelectHandler() {
