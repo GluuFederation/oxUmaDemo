@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.uma.ResourceSetRegistrationService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.ResourceSet;
-import org.xdi.oxauth.model.uma.ResourceSetStatus;
+import org.xdi.oxauth.model.uma.ResourceSetResponse;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.rs.shared.Resource;
@@ -57,11 +57,11 @@ public class ResourceRegistry {
             resourceSet.setScopes(ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values())));
 
             final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration());
-            final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
-            if (status != null && StringUtils.isNotBlank(status.getId())) {
+            final ResourceSetResponse response = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
+            if (response != null && StringUtils.isNotBlank(response.getId())) {
                 final Resource result = new Resource();
-                result.setId(status.getId());
-                LOG.debug("Resource registered, resource id: " + status.getId());
+                result.setId(response.getId());
+                LOG.debug("Resource registered, resource id: " + response.getId());
                 return result;
             }
         } else {
