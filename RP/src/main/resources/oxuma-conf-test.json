@@ -9,7 +9,7 @@
     "umaAatClientSecret":"oxauth_aat_client_test_password",
     "umaRedirectUri":"https://client.example.com/cb",
     "umaAmHost":"ce-dev.gluu.org",
-    "umaMetaDataUrl":"http://localhost:8085/seam/resource/restv1/oxauth/uma-configuration",
+    "umaMetaDataUrl":"https://localhost:8443/seam/resource/restv1/oxauth/uma-configuration",
     "rsScope":"http://ce-dev.gluu.org/oxuma-rs/ws/scope",
     "rsHost":"127.0.0.1:8887",
     "rsPhoneWsUrl": "http://127.0.0.1:8887/ws/phone",
