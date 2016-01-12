@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.uma.ResourceSetRegistrationService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.ResourceSet;
-import org.xdi.oxauth.model.uma.ResourceSetStatus;
+import org.xdi.oxauth.model.uma.ResourceSetResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Msg;
@@ -82,14 +82,14 @@ public class RsServlet extends RemoteServiceServlet implements Service {
                 LOG.debug("Register resource: " + CommonUtils.asJsonSilently(resourceSet));
 
                 final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
-                final ResourceSetStatus status = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
+                final ResourceSetResponse response = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
 
-                Preconditions.checkNotNull(status);
-                Preconditions.checkState(StringUtils.isNotBlank(status.getId()));
+                Preconditions.checkNotNull(response);
+                Preconditions.checkState(StringUtils.isNotBlank(response.getId()));
 
                 final Resource result = new Resource();
-                result.setId(status.getId());
-                LOG.debug("Resource registered, resource id: " + status.getId());
+                result.setId(response.getId());
+                LOG.debug("Resource registered, resource id: " + response.getId());
                 return result;
             } else {
                 LOG.debug("Unable to obtain PAT token. RS failed to protect resources by UMA.");
