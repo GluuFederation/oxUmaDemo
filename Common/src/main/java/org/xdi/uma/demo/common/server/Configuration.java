@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class Configuration {
 
-    private static final String APP_MODE = System.getProperty("app.mode");
+    private static final String APP_SERVER = System.getProperty("app.server");
 
     private static final Logger LOG = Logger.getLogger(Configuration.class);
 
@@ -22,7 +22,7 @@ public class Configuration {
 //            System.getProperty("jboss.home.dir");
 //    private static final String DIR = BASE_DIR + File.separator + "conf" + File.separator;
 
-    public static final String FILE_NAME = isTestMode() ? "oxuma-conf-test.json" : "oxuma-conf.json";
+    public static final String FILE_NAME = "oxuma-conf" + APP_SERVER + ".json";
 //    public static final String FILE_PATH = DIR + FILE_NAME;
 
     private static class Holder {
@@ -53,10 +53,6 @@ public class Configuration {
 
     public static Configuration getInstance() {
         return Holder.CONF;
-    }
-
-    public static boolean isTestMode() {
-        return "test".equals(APP_MODE);
     }
 
     @JsonProperty(value = "authorizeUrl")
