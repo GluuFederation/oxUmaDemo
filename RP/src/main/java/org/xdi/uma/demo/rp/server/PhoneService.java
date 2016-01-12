@@ -7,7 +7,7 @@ import org.jboss.resteasy.client.ProxyFactory;
 import org.python.google.common.base.Strings;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
+import org.xdi.oxauth.model.uma.PermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
 import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.uma.demo.common.gwt.Phones;
@@ -74,10 +74,10 @@ public class PhoneService {
     }
 
     public boolean authorizeRpt(String p_rpt, String p_aat, ClientResponseFailure p_failureResponse) {
-        final ClientResponse<ResourceSetPermissionTicket> response = p_failureResponse.getResponse();
+        final ClientResponse<PermissionTicket> response = p_failureResponse.getResponse();
         if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
             LOG.debug("Request forbidden. RPT doesn't have enough permissions.");
-            final ResourceSetPermissionTicket ticketWrapper = response.getEntity(ResourceSetPermissionTicket.class);
+            final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
             final String ticket = ticketWrapper.getTicket();
             LOG.debug("RS returns permission ticket: " + ticket);
             final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(p_rpt, ticket);
