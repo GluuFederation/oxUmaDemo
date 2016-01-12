@@ -8,14 +8,15 @@ import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.client.uma.wrapper.UmaClient;
+import org.xdi.oxauth.model.uma.PermissionTicket;
 import org.xdi.oxauth.model.uma.RPTResponse;
-import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
 import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.Configuration;
+import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rp.server.PhoneService;
 import org.xdi.uma.demo.rp.server.Utils;
@@ -55,7 +56,7 @@ public class RpSimulationTest {
             System.out.println("Response: unauthorized.");
         }
 
-        final UmaConfiguration umaConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(Configuration.getInstance().getUmaMetaDataUrl()).getMetadataConfiguration();
+        final UmaConfiguration umaConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(Configuration.getInstance().getUmaMetaDataUrl(), Uma.getClientExecutor()).getMetadataConfiguration();
         final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(umaConfiguration);
         final Configuration c = Configuration.getInstance();
 
@@ -68,10 +69,10 @@ public class RpSimulationTest {
             try {
                 doCall(rptResponse.getRpt(), aat.getAccessToken());
             } catch (ClientResponseFailure e) {
-                final ClientResponse<ResourceSetPermissionTicket> response = e.getResponse();
+                final ClientResponse<PermissionTicket> response = e.getResponse();
                 if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
                     System.out.println("Request forbidden.");
-                    final ResourceSetPermissionTicket ticketWrapper = response.getEntity(ResourceSetPermissionTicket.class);
+                    final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
                     final String ticket = ticketWrapper.getTicket();
                     System.out.println("RS returns permission ticket: " + ticket);
                     final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(rptResponse.getRpt(), ticket);

@@ -2,7 +2,7 @@
 
 <suite name="RP Suite" parallel="false">
 
-    <test name="RP Simulation Test" enabled="true">
+    <test name="RP Simulation Test" enabled="false">
         <classes>
             <class name="org.xdi.uam.demo.rp.RpSimulationTest"/>
         </classes>

@@ -26,6 +26,8 @@ public class Configuration {
     static {
         if (!Strings.isNullOrEmpty(APP_SERVER)) {
             APP_SERVER = "-" + APP_SERVER;
+        } else {
+            APP_SERVER = "";
         }
     }
 
