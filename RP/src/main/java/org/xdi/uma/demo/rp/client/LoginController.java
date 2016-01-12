@@ -28,12 +28,12 @@ public class LoginController {
     /**
      * Sets login cookie.
      *
-     * @param p_accessToken access token
+     * @param accessToken access token
      */
-    public static void setLoginCookie(String p_accessToken) {
+    public static void setLoginCookie(String accessToken) {
         final long tomorrowMilis = new Date().getTime() + ONE_DAY_IN_MILIS;
-        Cookies.setCookie(ACCESS_TOKEN_COOKIE_NAME, p_accessToken, new Date(tomorrowMilis));
-        RP.getService().storeAat(p_accessToken, new AsyncCallback<Void>() {
+        Cookies.setCookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, new Date(tomorrowMilis));
+        RP.getService().storeAat(accessToken, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable p_throwable) {
                 //do nothing
@@ -46,7 +46,7 @@ public class LoginController {
         });
     }
 
-    public static void login() {
+    public static void userLogin() {
         if (!hasAccessToken()) {
             final String accessToken = parseAccessToken();
             if (accessToken != null && accessToken.length() > 0 && !LoginController.hasAccessToken()) {

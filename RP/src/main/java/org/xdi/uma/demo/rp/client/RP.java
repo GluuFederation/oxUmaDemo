@@ -64,11 +64,11 @@ public class RP implements EntryPoint {
         initEventBus();
 
         if (LoginController.hasAccessToken()) {
-            showUI();
+                    showUI();
         } else {
-            LoginController.login();
-        }
-    }
+            LoginController.userLogin();
+                }
+            }
 
     private void initEventBus() {
         getEventBus().addHandler(LoginEvent.TYPE, new LoginEvent.Handler() {
@@ -351,7 +351,7 @@ public class RP implements EntryPoint {
             @Override
             public void onSelect(SelectEvent event) {
                 LoginController.logout();
-                LoginController.login();
+                LoginController.userLogin();
 
 //                final ProgressDialog progressDialog = new ProgressDialog("Perform operation...");
 //                progressDialog.show();
@@ -371,8 +371,8 @@ public class RP implements EntryPoint {
 //                        refresh();
 //                    }
 //                });
-            }
-        });
+                    }
+                });
 
         final TextButton clearButton = new TextButton("Clear");
         clearButton.addSelectHandler(new SelectEvent.SelectHandler() {
@@ -423,7 +423,7 @@ public class RP implements EntryPoint {
             @Override
             public void onSelect(SelectEvent event) {
                 LoginController.logout();
-                LoginController.login();
+                LoginController.userLogin();
             }
         });
 

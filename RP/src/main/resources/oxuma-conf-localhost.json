@@ -13,6 +13,6 @@
     "rsScope":"http://ce-dev.gluu.org/oxuma-rs/ws/scope",
     "rsHost":"127.0.0.1:8887",
     "rsPhoneWsUrl": "http://127.0.0.1:8887/ws/phone",
-    "loginUrl": "http://localhost:8085/authorize.seam?response_type=code+id_token+token&scope=openid+profile+%s&client_id=%s&redirect_uri=%s&nonce=nonce",
-    "redirectUri":"http://127.0.0.1:8889"
+    "loginUrl": "https://localhost:8443/authorize.seam?response_type=code+id_token+token&scope=openid+profile+%s&client_id=%s&redirect_uri=%s&nonce=nonce",
+    "redirectUri":"http://127.0.0.1:8888/rp.html?gwt.codesvr=127.0.0.1:9998"
 }

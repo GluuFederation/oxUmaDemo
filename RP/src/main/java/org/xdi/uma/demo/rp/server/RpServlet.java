@@ -67,7 +67,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     @Override
-    public String obtainNewAat(String p_aat) {
+    public String obtainNewAat() {
         try {
             final Token aat = Utils.obtainAat();
             if (aat != null) {
