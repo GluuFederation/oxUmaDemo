@@ -21,6 +21,7 @@
         <gwt.version>2.5.0</gwt.version>
         <oxauth.version>3.0.4-SNAPSHOT</oxauth.version>
         <oxd.version>3.0.5-SNAPSHOT</oxd.version>
+        <guava.version>17.0</guava.version>
     </properties>
 
     <prerequisites>
@@ -262,7 +263,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>13.0.1</version>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-gwt</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.transaction</groupId>
