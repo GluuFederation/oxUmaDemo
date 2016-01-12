@@ -2,6 +2,7 @@ package org.xdi.uma.demo.common.server;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.python.google.common.base.Strings;
 import org.xdi.util.Util;
 
 import java.io.InputStream;
@@ -13,7 +14,7 @@ import java.io.InputStream;
 
 public class Configuration {
 
-    private static final String APP_SERVER = System.getProperty("app.server");
+    private static String APP_SERVER = System.getProperty("app.server");
 
     private static final Logger LOG = Logger.getLogger(Configuration.class);
 
@@ -21,6 +22,12 @@ public class Configuration {
 //            System.getProperty("catalina.home") :
 //            System.getProperty("jboss.home.dir");
 //    private static final String DIR = BASE_DIR + File.separator + "conf" + File.separator;
+
+    static {
+        if (!Strings.isNullOrEmpty(APP_SERVER)) {
+            APP_SERVER = "-" + APP_SERVER;
+        }
+    }
 
     public static final String FILE_NAME = "oxuma-conf" + APP_SERVER + ".json";
 //    public static final String FILE_PATH = DIR + FILE_NAME;

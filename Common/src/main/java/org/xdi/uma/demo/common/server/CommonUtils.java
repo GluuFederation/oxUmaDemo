@@ -72,6 +72,8 @@ public class CommonUtils {
             if (org.xdi.oxauth.model.util.Util.allNotBlank(accessToken)) {
                 return new Token(null, null, accessToken, scopeType.getValue(), expiresIn);
             }
+        } else {
+            LOG.error(response.getEntity());
         }
 
         return null;
