@@ -1,7 +1,11 @@
 package org.xdi.uma.demo.common.server;
 
 import org.apache.log4j.Logger;
+import org.xdi.oxauth.client.TokenClient;
+import org.xdi.oxauth.client.TokenResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
+import org.xdi.oxauth.model.uma.UmaScopeType;
+import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.server.ref.ILogList;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.util.InterfaceRegistry;
@@ -48,4 +52,37 @@ public class CommonUtils {
             return "";
         }
     }
+
+    public static Token request(final String tokenUrl, final String umaClientId, final String umaClientSecret, UmaScopeType scopeType, String... scopeArray) throws Exception {
+
+        String scope = scopeType.getValue();
+        if (scopeArray != null && scopeArray.length > 0) {
+            for (String s : scopeArray) {
+                scope = scope + " " + s;
+            }
+        }
+
+        TokenClient tokenClient = new TokenClient(tokenUrl);
+        tokenClient.setExecutor(Uma.getClientExecutor());
+        TokenResponse response = tokenClient.execClientCredentialsGrant(scope, umaClientId, umaClientSecret);
+
+        if (response.getStatus() == 200) {
+            final String accessToken = response.getAccessToken();
+            final Integer expiresIn = response.getExpiresIn();
+            if (org.xdi.oxauth.model.util.Util.allNotBlank(accessToken)) {
+                return new Token(null, null, accessToken, scopeType.getValue(), expiresIn);
+            }
+        }
+
+        return null;
+    }
+
+    public static Token requestPat(final String tokenUrl, final String umaClientId, final String umaClientSecret, String... scopeArray) throws Exception {
+        return request(tokenUrl, umaClientId, umaClientSecret, UmaScopeType.PROTECTION, scopeArray);
+    }
+
+    public static Token requestAat(final String tokenUrl, final String umaClientId, final String umaClientSecret, String... scopeArray) throws Exception {
+        return request(tokenUrl, umaClientId, umaClientSecret, UmaScopeType.AUTHORIZATION, scopeArray);
+    }
+
 }

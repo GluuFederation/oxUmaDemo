@@ -5,9 +5,11 @@ import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.RPTResponse;
+import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.Uma;
+import org.xdi.uma.demo.common.server.ref.IAat;
 import org.xdi.uma.demo.common.server.ref.IRpt;
 import org.xdi.util.InterfaceRegistry;
 
@@ -77,6 +79,23 @@ public class Utils {
             LOG.error(e.getMessage(), e);
         }
         LOG.debug("Failed to obtain RPT.");
+        return null;
+    }
+
+    public static Token obtainAat() {
+        try {
+            final Configuration c = Configuration.getInstance();
+            LOG.trace("Try to obtain AAT token...");
+            final Token aatToken = CommonUtils.requestAat(c.getTokenUrl(), c.getUmaAatClientId(), c.getUmaAatClientSecret());
+            if (aatToken != null) {
+                InterfaceRegistry.put(IAat.class, aatToken);
+                LOG.trace("AAT token is successfully obtained.");
+                return aatToken;
+            }
+            LOG.error("Failed to obtain AAT token.");
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
         return null;
     }
 }

@@ -28,6 +28,15 @@ public class LoginEvent extends GwtEvent<LoginEvent.Handler> {
      */
     public static final Type<Handler> TYPE = new Type<Handler>();
 
+    private boolean login;
+
+    public LoginEvent(boolean login) {
+        this.login = login;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
 
     @Override
     public Type<Handler> getAssociatedType() {

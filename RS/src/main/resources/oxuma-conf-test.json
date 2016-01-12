@@ -1,6 +1,6 @@
 {
-    "authorizeUrl":"http://localhost:8085/seam/resource/restv1/oxauth/authorize",
-    "tokenUrl":"http://localhost:8085/seam/resource/restv1/oxauth/token",
+    "authorizeUrl":"http://localhost:8090/seam/resource/restv1/oxauth/authorize",
+    "tokenUrl":"http://localhost:8090/seam/resource/restv1/oxauth/token",
     "umaUserId":"test_user",
     "umaUserSecret":"test_user_password",
     "umaPatClientId":"@!B080.D627.BA42.613D!0001!A1FA.7250!0008!AB77!1A2B",
@@ -11,7 +11,7 @@
     "umaAmHost":"ce-dev.gluu.org",
     "umaMetaDataUrl":"http://localhost:8085/seam/resource/restv1/oxauth/uma-configuration",
     "rsScope":"http://ce-dev.gluu.org/oxuma-rs/ws/scope",
-    "rsHost":"127.0.0.1:8887",
+    "rsHost":"ce-dev.gluu.org",
     "rsPhoneWsUrl": "http://127.0.0.1:8887/ws/phone",
     "loginUrl": "http://localhost:8085/authorize.seam?response_type=code+id_token+token&scope=openid+profile+%s&client_id=%s&redirect_uri=%s&nonce=nonce",
     "redirectUri":"http://127.0.0.1:8889"

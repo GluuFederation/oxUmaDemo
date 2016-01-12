@@ -465,7 +465,7 @@ public class RP implements EntryPoint {
         });
     }
 
-    private static void handleException(Throwable p_caught) {
-        // handle exception
+    private static void handleException(Throwable caught) {
+        caught.printStackTrace();
     }
 }

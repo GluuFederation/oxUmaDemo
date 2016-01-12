@@ -51,7 +51,7 @@ public class LoginController {
             final String accessToken = parseAccessToken();
             if (accessToken != null && accessToken.length() > 0 && !LoginController.hasAccessToken()) {
                 LoginController.setLoginCookie(accessToken);
-                RP.getEventBus().fireEvent(new LoginEvent());
+                RP.getEventBus().fireEvent(new LoginEvent(true));
                 return;
             }
 

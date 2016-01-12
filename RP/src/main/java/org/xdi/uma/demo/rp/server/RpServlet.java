@@ -8,10 +8,11 @@ import org.jboss.resteasy.client.ClientResponseFailure;
 import org.python.google.common.base.Strings;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.ResourceSetPermissionTicket;
+import org.xdi.oxauth.model.uma.PermissionTicket;
 import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
 import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
+import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;
@@ -67,15 +68,15 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public String obtainNewAat(String p_aat) {
-//        try {
-//            final Token aat = Utils.obtainAat();
-//            if (aat != null) {
-//                LOG.trace("AAT token obtained successfully.");
-//                return aat.getAccessToken();
-//            }
-//        } catch (Exception e) {
-//            LOG.error(e.getMessage(), e);
-//        }
+        try {
+            final Token aat = Utils.obtainAat();
+            if (aat != null) {
+                LOG.trace("AAT token obtained successfully.");
+                return aat.getAccessToken();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
         return null;
     }
 
@@ -145,10 +146,10 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                         return phones;
                     }
                 } catch (ClientResponseFailure e) {
-                    final ClientResponse<ResourceSetPermissionTicket> response = e.getResponse();
+                    final ClientResponse<PermissionTicket> response = e.getResponse();
                     if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
                         LOG.debug("Request forbidden. RPT doesn't have enough permissions.");
-                        final ResourceSetPermissionTicket ticketWrapper = response.getEntity(ResourceSetPermissionTicket.class);
+                        final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
                         final String ticket = ticketWrapper.getTicket();
                         LOG.debug("RS returns permission ticket: " + ticket);
                         final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(rpt, ticket);
