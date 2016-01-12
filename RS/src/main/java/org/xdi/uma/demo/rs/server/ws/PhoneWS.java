@@ -1,7 +1,7 @@
 package org.xdi.uma.demo.rs.server.ws;
 
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.model.uma.RegisterPermissionRequest;
+import org.xdi.oxauth.model.uma.UmaPermission;
 import org.xdi.oxauth.model.uma.RptIntrospectionResponse;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.RsResponse;
@@ -131,7 +131,7 @@ public class PhoneWS {
         final PermissionService permissionService = PermissionService.getInstance();
         final String resourceId = getResource().getId();
         final RptIntrospectionResponse status = Utils.extract(p_request);
-        final List<RegisterPermissionRequest> permissions = status.getPermissions();
+        final List<UmaPermission> permissions = status.getPermissions();
         return permissionService.hasEnoughPermissionsWithTicketRegistration(permissions, resourceId, p_scopes);
     }
 
