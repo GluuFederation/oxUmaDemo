@@ -105,11 +105,13 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         try {
             final Token token = Utils.obtainPat();
             if (token != null) {
+                LOG.error("New PAT obtained successfully.");
                 return token.getAccessToken();
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
+        LOG.error("Failed to obtain new PAT.");
         return null;
     }
 
