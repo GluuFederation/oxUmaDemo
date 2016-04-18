@@ -96,6 +96,11 @@
     <dependencies>
         <dependency>
             <groupId>org.xdi</groupId>
+            <artifactId>uma-rs-resteasy</artifactId>
+            <version>2.4.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xdi</groupId>
             <artifactId>oxd-rs-protect</artifactId>
         </dependency>
         <dependency>
