@@ -3,7 +3,6 @@ package org.xdi.uma.demo.rs.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.xdi.uma.demo.common.gwt.Msg;
-import org.xdi.uma.demo.rs.shared.Resource;
 
 import java.util.List;
 
@@ -15,8 +14,6 @@ import java.util.List;
 public interface Service extends RemoteService {
 
     public List<Msg> getMessageList();
-
-    public Resource registerResource();
 
     public String obtainNewPat();
 

@@ -19,7 +19,6 @@ import com.sencha.gxt.widget.core.client.form.TextArea;
 import org.xdi.gwt.client.GwtUtils;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.ui.ProgressDialog;
-import org.xdi.uma.demo.rs.shared.Resource;
 
 import java.util.List;
 
@@ -57,36 +56,6 @@ public class RS implements EntryPoint {
             @Override
             public void onSelect(SelectEvent event) {
                 refresh();
-            }
-        });
-
-        final TextButton registerPhoneButton = new TextButton("Register phone's resource set");
-        registerPhoneButton.addSelectHandler(new SelectEvent.SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                final ProgressDialog progressDialog = new ProgressDialog("Perform operation...");
-                progressDialog.show();
-
-                getService().registerResource(new AsyncCallback<Resource>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        progressDialog.hide();
-                        org.xdi.gwt.client.GwtUtils.showError("Unable to register resource on AM. Please check server logs for details.");
-                        handleException(caught);
-                        refresh();
-                    }
-
-                    @Override
-                    public void onSuccess(Resource result) {
-                        progressDialog.hide();
-                        if (result != null) {
-                            GwtUtils.showInformation("Resource is successfully registered.");
-                        } else {
-                            GwtUtils.showError("Unable to register resource on AM. Please check server logs for details.");
-                        }
-                        refresh();
-                    }
-                });
             }
         });
 
@@ -137,7 +106,6 @@ public class RS implements EntryPoint {
         final HBoxLayoutContainer h = new HBoxLayoutContainer();
         h.add(refreshButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
         h.add(clearButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
-//        h.add(registerPhoneButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
         h.add(newPatButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
 
         final VerticalLayoutContainer v = new VerticalLayoutContainer();

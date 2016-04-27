@@ -1,29 +1,26 @@
 package org.xdi.uma.demo.rs.server;
 
-import com.google.common.base.Preconditions;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.xdi.oxauth.client.uma.ResourceSetRegistrationService;
-import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.ResourceSet;
-import org.xdi.oxauth.model.uma.ResourceSetResponse;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
-import org.xdi.oxauth.model.uma.wrapper.Token;
+import org.xdi.oxd.rs.protect.RsProtector;
+import org.xdi.oxd.rs.protect.RsResource;
+import org.xdi.oxd.rs.protect.resteasy.ConfigurationLoader;
+import org.xdi.oxd.rs.protect.resteasy.PatProvider;
+import org.xdi.oxd.rs.protect.resteasy.ResourceRegistrar;
+import org.xdi.oxd.rs.protect.resteasy.ServiceProvider;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rs.client.Service;
-import org.xdi.uma.demo.rs.shared.Resource;
-import org.xdi.uma.demo.rs.shared.ResourceType;
-import org.xdi.uma.demo.rs.shared.ScopeType;
 import org.xdi.util.InterfaceRegistry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -47,8 +44,18 @@ public class RsServlet extends RemoteServiceServlet implements Service {
                     InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
                     LOG.info("Loaded UMA configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
 
-                    final Resource resource = registerResource();
-                    ResourceRegistry.getInstance().put(ResourceType.PHONE, resource);
+                    ClassLoader classLoader = ConfigurationLoader.class.getClassLoader();
+                    org.xdi.oxd.rs.protect.resteasy.Configuration configuration = ConfigurationLoader.loadFromJson(classLoader.getResourceAsStream("rs-protect-config.json"));
+                    Collection<RsResource> values = RsProtector.instance(classLoader.getResourceAsStream("rs-protect.json")).getResourceMap().values();
+
+                    ServiceProvider serviceProvider = new ServiceProvider(configuration);
+                    PatProvider patProvider = new PatProvider(serviceProvider);
+                    ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider);
+
+                    resourceRegistrar.register(values);
+
+                    ResteasyProviderFactory.pushContext(PatProvider.class, patProvider);
+                    ResteasyProviderFactory.pushContext(ResourceRegistrar.class, resourceRegistrar);
 
                     LOG.info("Resource Server started successfully.");
                 } else {
@@ -67,52 +74,10 @@ public class RsServlet extends RemoteServiceServlet implements Service {
     }
 
     @Override
-    public Resource registerResource() {
-
-        try {
-            final Token pat = Utils.getPat();
-
-            if (pat != null) {
-                final List<String> scopesAsUrls = ScopeService.getInstance().getScopesAsUrls(Arrays.asList(ScopeType.values()));
-
-                final ResourceSet resourceSet = new ResourceSet();
-                resourceSet.setName("oxUma Demo phones");
-                resourceSet.setScopes(scopesAsUrls);
-
-                LOG.debug("Register resource: " + CommonUtils.asJsonSilently(resourceSet));
-
-                final ResourceSetRegistrationService registrationService = UmaClientFactory.instance().createResourceSetRegistrationService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
-                final ResourceSetResponse response = registrationService.addResourceSet("Bearer " + pat.getAccessToken(), resourceSet);
-
-                Preconditions.checkNotNull(response);
-                Preconditions.checkState(StringUtils.isNotBlank(response.getId()));
-
-                final Resource result = new Resource();
-                result.setId(response.getId());
-                LOG.debug("Resource registered, resource id: " + response.getId());
-                return result;
-            } else {
-                LOG.debug("Unable to obtain PAT token. RS failed to protect resources by UMA.");
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return null;
-    }
-
-    @Override
     public String obtainNewPat() {
-        try {
-            final Token token = Utils.obtainPat();
-            if (token != null) {
-                LOG.error("New PAT obtained successfully.");
-                return token.getAccessToken();
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        LOG.error("Failed to obtain new PAT.");
-        return null;
+        PatProvider patProvider = ResteasyProviderFactory.getContextData(PatProvider.class);
+        patProvider.clearPat();
+        return patProvider.getPatToken();
     }
 
     @Override
