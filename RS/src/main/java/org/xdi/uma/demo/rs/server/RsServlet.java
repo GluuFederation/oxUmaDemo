@@ -59,9 +59,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public String obtainNewPat() {
-        PatProvider patProvider = ResteasyProviderFactory.getContextData(PatProvider.class);
-        patProvider.clearPat();
-        return patProvider.getPatToken();
+        return ResteasyProviderFactory.getContextData(PatProvider.class).renewPat();
     }
 
     @Override
