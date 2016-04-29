@@ -11,7 +11,6 @@ import org.xdi.oxd.rs.protect.resteasy.ResourceRegistrar;
 import org.xdi.oxd.rs.protect.resteasy.ServiceProvider;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.server.CommonUtils;
-import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.rs.client.Service;
 
 import javax.servlet.ServletConfig;
@@ -33,24 +32,21 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         super.init(config);
 
         try {
-            final Configuration c = Configuration.getInstance();
-            if (c != null) {
-                ClassLoader classLoader = ConfigurationLoader.class.getClassLoader();
-                org.xdi.oxd.rs.protect.resteasy.Configuration configuration = ConfigurationLoader.loadFromJson(classLoader.getResourceAsStream("rs-protect-config.json"));
+            ClassLoader classLoader = ConfigurationLoader.class.getClassLoader();
+            org.xdi.oxd.rs.protect.resteasy.Configuration configuration = ConfigurationLoader.loadFromJson(classLoader.getResourceAsStream("rs-protect-config.json"));
 
-                Collection<RsResource> values = RsProtector.instance(classLoader.getResourceAsStream("rs-protect.json")).getResourceMap().values();
+            Collection<RsResource> values = RsProtector.instance(classLoader.getResourceAsStream("rs-protect.json")).getResourceMap().values();
 
-                ServiceProvider serviceProvider = new ServiceProvider(configuration);
-                PatProvider patProvider = new PatProvider(serviceProvider);
-                ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider);
+            ServiceProvider serviceProvider = new ServiceProvider(configuration);
+            PatProvider patProvider = new PatProvider(serviceProvider);
+            ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider);
 
-                resourceRegistrar.register(values);
+            resourceRegistrar.register(values);
 
-                ResteasyProviderFactory.pushContext(PatProvider.class, patProvider);
-                ResteasyProviderFactory.pushContext(ResourceRegistrar.class, resourceRegistrar);
+            ResteasyProviderFactory.pushContext(PatProvider.class, patProvider);
+            ResteasyProviderFactory.pushContext(ResourceRegistrar.class, resourceRegistrar);
 
-                LOG.info("Resource Server started successfully.");
-            }
+            LOG.info("Resource Server started successfully.");
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
