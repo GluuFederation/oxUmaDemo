@@ -1,6 +1,7 @@
 package org.xdi.uma.demo.rs.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.xdi.oxd.rs.protect.RsProtector;
@@ -34,14 +35,18 @@ public class RsServlet extends RemoteServiceServlet implements Service {
         try {
             ClassLoader classLoader = ConfigurationLoader.class.getClassLoader();
             org.xdi.oxd.rs.protect.resteasy.Configuration configuration = ConfigurationLoader.loadFromJson(classLoader.getResourceAsStream("rs-protect-config.json"));
+            LOG.info("Loaded configuration: " + configuration);
 
             Collection<RsResource> values = RsProtector.instance(classLoader.getResourceAsStream("rs-protect.json")).getResourceMap().values();
+
+            LOG.info("Protection configuration: " + IOUtils.toString(classLoader.getResourceAsStream("rs-protect.json")));
 
             ServiceProvider serviceProvider = new ServiceProvider(configuration);
             PatProvider patProvider = new PatProvider(serviceProvider);
             ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider);
 
             resourceRegistrar.register(values);
+            LOG.info("Resources are registered at AS: " + configuration.getUmaWellknownEndpoint());
 
             ResteasyProviderFactory.pushContext(PatProvider.class, patProvider);
             ResteasyProviderFactory.pushContext(ResourceRegistrar.class, resourceRegistrar);
