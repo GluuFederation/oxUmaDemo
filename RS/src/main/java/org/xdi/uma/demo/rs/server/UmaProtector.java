@@ -16,7 +16,7 @@ import javax.ws.rs.ext.Provider;
 
 /**
  * @author Yuriy Zabrovarnyy
- * @version 0.9, 17/05/2013
+ * @version 0.9, 05/03/2016
  */
 @Provider
 @ServerInterceptor
