@@ -1,8 +1,8 @@
 package org.xdi.uma.demo.rs.server.ws;
 
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import org.xdi.oxauth.model.uma.ScopeDescription;
-import org.xdi.uma.demo.rs.server.Utils;
 import org.xdi.uma.demo.rs.shared.ScopeType;
 import org.xdi.uma.demo.rs.shared.Scopes;
 import org.xdi.util.Util;
@@ -14,7 +14,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +31,7 @@ public class ScopeWS {
         try {
             final String requestUrl = httpRequest.getRequestURL().toString(); // e.g. http://127.0.0.1:8888/ws/scope
 
-            final List<String> scopeList = new ArrayList<String>();
+            final List<String> scopeList = Lists.newArrayList();
             for (ScopeType s : ScopeType.values()) {
                 scopeList.add(requestUrl + "/" + s.getValue());
             }
@@ -43,7 +42,7 @@ public class ScopeWS {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
-        return Utils.INTERNAL_ERROR;
+        return PhoneWS.INTERNAL_ERROR_RESPONSE;
     }
 
     @GET
@@ -63,6 +62,6 @@ public class ScopeWS {
             LOG.error(e.getMessage(), e);
         }
 
-        return Utils.INTERNAL_ERROR;
+        return PhoneWS.INTERNAL_ERROR_RESPONSE;
     }
 }
