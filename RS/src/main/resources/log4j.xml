@@ -30,6 +30,10 @@
         <priority value="TRACE"/>
     </category>
 
+    <category name="org.xdi.oxd">
+        <priority value="TRACE"/>
+    </category>
+
     <category name="org.ajax4jsf.cache">
         <priority value="WARN"/>
     </category>

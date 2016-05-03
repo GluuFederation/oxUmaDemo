@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * @author Yuriy Zabrovarnyy
- * @version 0.9, 08/05/2013
+ * @version 0.9, 08/05/2016
  */
 
 public class RS implements EntryPoint {
