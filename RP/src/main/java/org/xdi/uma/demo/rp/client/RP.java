@@ -31,7 +31,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 import org.xdi.gwt.client.GwtUtils;
-import org.xdi.uma.demo.common.gwt.Conf;
+import org.xdi.uma.demo.rp.shared.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.ui.ProgressDialog;

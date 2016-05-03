@@ -11,7 +11,7 @@ import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.*;
 import org.xdi.oxauth.model.uma.wrapper.Token;
-import org.xdi.uma.demo.common.gwt.Conf;
+import org.xdi.uma.demo.rp.shared.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;

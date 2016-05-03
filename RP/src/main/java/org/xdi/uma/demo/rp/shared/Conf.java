@@ -1,4 +1,4 @@
-package org.xdi.uma.demo.common.gwt;
+package org.xdi.uma.demo.rp.shared;
 
 import java.io.Serializable;
 

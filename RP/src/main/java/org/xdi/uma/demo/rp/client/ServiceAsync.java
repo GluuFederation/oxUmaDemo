@@ -1,7 +1,7 @@
 package org.xdi.uma.demo.rp.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.xdi.uma.demo.common.gwt.Conf;
+import org.xdi.uma.demo.rp.shared.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
 
