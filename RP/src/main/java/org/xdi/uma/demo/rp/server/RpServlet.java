@@ -6,12 +6,10 @@ import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.python.google.common.base.Strings;
+import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
-import org.xdi.oxauth.model.uma.PermissionTicket;
-import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
-import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
-import org.xdi.oxauth.model.uma.UmaConfiguration;
+import org.xdi.oxauth.model.uma.*;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
@@ -19,7 +17,9 @@ import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.Uma;
+import org.xdi.uma.demo.common.server.ref.IAat;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
+import org.xdi.uma.demo.common.server.ref.IRpt;
 import org.xdi.uma.demo.rp.client.LoginController;
 import org.xdi.uma.demo.rp.client.Service;
 import org.xdi.util.InterfaceRegistry;
@@ -46,19 +46,26 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
         try {
             final Configuration c = Configuration.getInstance();
-            if (c != null) {
-                final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
-                if (umaAmConfiguration != null) {
-                    InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
-                    LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
-                    LOG.info("RP Server started successfully.");
-                } else {
-                    LOG.error("Unable to load Authorization Server configuration. Failed to start RP Server.");
-                }
 
+            final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
+            if (umaAmConfiguration != null) {
+                InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
+                LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
+                LOG.info("RP Server started successfully.");
+            } else {
+                LOG.error("Unable to load Authorization Server configuration. Failed to start RP Server.");
+                throw new ServletException();
             }
+
+            Token aat = obtainAat();
+            if (aat == null) {
+                LOG.error("Failed to obtain AAT.");
+                throw new ServletException();
+            }
+
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Failed to start RP Demo Application. " + e.getMessage(), e);
+            throw new ServletException(e);
         }
     }
 
@@ -70,11 +77,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     @Override
     public String obtainNewAat() {
         try {
-            final Token aat = Utils.obtainAat();
-            if (aat != null) {
-                LOG.trace("AAT token obtained successfully.");
-                return aat.getAccessToken();
-            }
+            return obtainAat().getAccessToken();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
@@ -84,7 +87,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     @Override
     public String obtainNewRpt() {
         try {
-            final String rpt = Utils.obtainRpt(getAat());
+            final String rpt = obtainRpt(getAat());
             if (StringUtils.isNotBlank(rpt)) {
                 LOG.trace("RPT token obtained successfully.");
             }
@@ -139,7 +142,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
             if (aat != null) {
 
-                final String rpt = Utils.obtainRpt(aat);
+                final String rpt = obtainRpt(aat);
 
                 try {
                     final Phones phones = phoneService.getPhonesVerbose(rpt);
@@ -194,7 +197,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     private String getRpt() {
-        return Utils.getRpt(getAat());
+        return getRpt(getAat());
     }
 
 
@@ -260,5 +263,49 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         conf.setAmHost(serverConf.getUmaAmHost());
         conf.setRsHost(serverConf.getRsHost());
         return conf;
+    }
+
+    public String getRpt(String aat) {
+        final String rpt = InterfaceRegistry.get(IRpt.class);
+        if (rpt == null) {
+            return obtainRpt(aat);
+        }
+        return rpt;
+    }
+
+    public String obtainRpt(String aat) {
+        LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + aat);
+        try {
+            final Configuration c = Configuration.getInstance();
+            final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.getUmaAmHost());
+            if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
+                final String result = rptResponse.getRpt();
+                InterfaceRegistry.put(IRpt.class, result);
+                LOG.debug("RPT is successfully obtained from AM. RPT: " + result);
+                return result;
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        LOG.debug("Failed to obtain RPT.");
+        return null;
+    }
+
+    public Token obtainAat() {
+        try {
+            final Configuration c = Configuration.getInstance();
+            LOG.trace("Try to obtain AAT token...");
+            final Token aatToken = CommonUtils.requestAat(c.getTokenUrl(), c.getUmaAatClientId(), c.getUmaAatClientSecret());
+            if (aatToken != null) {
+                InterfaceRegistry.put(IAat.class, aatToken);
+                LOG.trace("AAT token is successfully obtained.");
+                return aatToken;
+            }
+            LOG.error("Failed to obtain AAT token.");
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
     }
 }

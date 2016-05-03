@@ -19,7 +19,7 @@ import org.xdi.uma.demo.common.server.Configuration;
 import org.xdi.uma.demo.common.server.Uma;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rp.server.PhoneService;
-import org.xdi.uma.demo.rp.server.Utils;
+import org.xdi.uma.demo.rp.server.RpServlet;
 import org.xdi.util.InterfaceRegistry;
 import org.xdi.util.Util;
 
@@ -44,7 +44,7 @@ public class RpSimulationTest {
         }
 
 
-        Utils.obtainRpt("8a740bcb-b8e2-4301-a124-7d9b58582285");
+        RpServlet.obtainRpt("8a740bcb-b8e2-4301-a124-7d9b58582285");
     }
 
     @Test

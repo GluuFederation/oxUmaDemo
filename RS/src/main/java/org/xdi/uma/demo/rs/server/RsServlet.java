@@ -53,7 +53,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
             LOG.info("Resource Server started successfully.");
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Failed to start Resource Server. " +e.getMessage(), e);
             throw new ServletException(e);
         }
     }
