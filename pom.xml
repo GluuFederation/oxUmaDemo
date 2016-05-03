@@ -62,11 +62,6 @@
         <dependencies>
             <dependency>
                 <groupId>org.xdi</groupId>
-                <artifactId>oxd-rs-protect</artifactId>
-                <version>${oxd.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.xdi</groupId>
                 <artifactId>oxGwt</artifactId>
                 <version>0.1.5-SNAPSHOT</version>
             </dependency>

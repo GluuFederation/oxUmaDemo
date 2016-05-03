@@ -10,7 +10,7 @@
                 ]
             },
             {
-                "httpMethods":["PUT"],
+                "httpMethods":["PUT", "POST"],
                 "scopes":[
                     "http://photoz.example.com/dev/actions/all",
                     "http://photoz.example.com/dev/actions/add"
@@ -21,19 +21,6 @@
                 "scopes":[
                     "http://photoz.example.com/dev/actions/all",
                     "http://photoz.example.com/dev/actions/remove"
-                ]
-            }
-
-
-        ]
-    },
-    {
-        "path":"/document",
-        "conditions":[
-            {
-                "httpMethods":["GET"],
-                "scopes":[
-                    "http://photoz.example.com/dev/actions/view"
                 ]
             }
         ]
