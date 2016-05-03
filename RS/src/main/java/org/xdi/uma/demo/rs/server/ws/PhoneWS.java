@@ -1,18 +1,13 @@
 package org.xdi.uma.demo.rs.server.ws;
 
 import org.apache.log4j.Logger;
+import org.xdi.oxd.rs.protect.Jackson;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.RsResponse;
 import org.xdi.uma.demo.common.gwt.Status;
-import org.xdi.uma.demo.common.server.CommonUtils;
 import org.xdi.uma.demo.rs.server.PhoneService;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 /**
@@ -42,7 +37,7 @@ public class PhoneWS {
                 status = Status.FAILED;
             }
 
-            return Response.ok().entity(CommonUtils.asJsonSilently(new RsResponse(status))).build();
+            return Response.ok().entity(Jackson.asJsonSilently(new RsResponse(status))).build();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
@@ -66,7 +61,7 @@ public class PhoneWS {
                     LOG.trace("Failed to remove phone, phone: " + p_phone);
                     status = Status.FAILED;
                 }
-                return Response.ok().entity(CommonUtils.asJsonSilently(new RsResponse(status))).build();
+                return Response.ok().entity(Jackson.asJsonSilently(new RsResponse(status))).build();
             } else {
                 // phone is not in list, produce NOT_FOUND response
                 return Response.status(Response.Status.NOT_FOUND).build();
@@ -81,7 +76,7 @@ public class PhoneWS {
     @Produces({"application/json"})
     public Response getList() {
         try {
-            final String entity = CommonUtils.asJsonSilently(new Phones(PhoneService.getInstance().getPhoneList()));
+            final String entity = Jackson.asJsonSilently(new Phones(PhoneService.getInstance().getPhoneList()));
             LOG.debug("Returned json: " + entity);
             return Response.ok(entity).build();
         } catch (Exception e) {

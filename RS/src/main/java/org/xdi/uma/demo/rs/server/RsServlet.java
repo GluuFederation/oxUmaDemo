@@ -11,8 +11,10 @@ import org.xdi.oxd.rs.protect.resteasy.PatProvider;
 import org.xdi.oxd.rs.protect.resteasy.ResourceRegistrar;
 import org.xdi.oxd.rs.protect.resteasy.ServiceProvider;
 import org.xdi.uma.demo.common.gwt.Msg;
-import org.xdi.uma.demo.common.server.CommonUtils;
+import org.xdi.uma.demo.common.server.LogList;
+import org.xdi.uma.demo.common.server.ref.ILogList;
 import org.xdi.uma.demo.rs.client.Service;
+import org.xdi.util.InterfaceRegistry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -60,7 +62,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public List<Msg> getMessageList() {
-        return CommonUtils.getLogList().getAll();
+        return InterfaceRegistry.<LogList>get(ILogList.class).getAll();
     }
 
     @Override
@@ -70,7 +72,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public void clearLogs() {
-        CommonUtils.getLogList().clear();
+        InterfaceRegistry.<LogList>get(ILogList.class).clear();
     }
 
 }
