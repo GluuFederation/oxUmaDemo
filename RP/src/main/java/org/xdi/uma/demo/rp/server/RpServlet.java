@@ -273,7 +273,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         return rpt;
     }
 
-    public String obtainRpt(String aat) {
+    public static String obtainRpt(String aat) {
         LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + aat);
         try {
             final Configuration c = Configuration.getInstance();
