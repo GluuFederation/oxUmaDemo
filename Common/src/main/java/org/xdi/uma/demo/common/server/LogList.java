@@ -1,13 +1,9 @@
 package org.xdi.uma.demo.common.server;
 
+import com.google.common.collect.Maps;
 import org.xdi.uma.demo.common.gwt.Msg;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Yuriy Zabrovarnyy
@@ -33,7 +29,7 @@ public class LogList {
 
     public void setSize(int hashMapSize) {
         this.capacity = hashMapSize;
-        map = new HashMap<Long, Msg>(hashMapSize);
+        map = Maps.newHashMapWithExpectedSize(hashMapSize);
     }
 
     /**

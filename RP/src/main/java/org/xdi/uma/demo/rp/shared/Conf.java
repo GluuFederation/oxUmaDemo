@@ -11,6 +11,7 @@ public class Conf implements Serializable {
 
     private String amHost;
     private String rsHost;
+    private AuthenticationType authenticationType = AuthenticationType.CLIENT_AUTHENTICATION;
 
     public String getAmHost() {
         return amHost;
@@ -28,13 +29,20 @@ public class Conf implements Serializable {
         this.rsHost = rsHost;
     }
 
+    public AuthenticationType getAuthenticationType() {
+        return authenticationType;
+    }
+
+    public void setAuthenticationType(AuthenticationType authenticationType) {
+        this.authenticationType = authenticationType;
+    }
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Conf");
-        sb.append("{amHost='").append(amHost).append('\'');
-        sb.append(", rsHost='").append(rsHost).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "Conf{" +
+                "amHost='" + amHost + '\'' +
+                ", rsHost='" + rsHost + '\'' +
+                ", authenticationType=" + authenticationType +
+                '}';
     }
 }

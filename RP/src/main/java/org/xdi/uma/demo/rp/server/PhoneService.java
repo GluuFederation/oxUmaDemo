@@ -13,8 +13,6 @@ import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.common.gwt.RsResponse;
 import org.xdi.uma.demo.common.gwt.Status;
-import org.xdi.uma.demo.common.server.CommonUtils;
-import org.xdi.uma.demo.common.server.Configuration;
 
 import javax.ws.rs.core.Response;
 

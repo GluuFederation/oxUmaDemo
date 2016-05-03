@@ -1,4 +1,4 @@
-package org.xdi.uma.demo.common.server;
+package org.xdi.uma.demo.rp.server;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;

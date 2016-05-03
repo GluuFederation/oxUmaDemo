@@ -1,4 +1,4 @@
-package org.xdi.uma.demo.common.server;
+package org.xdi.uma.demo.rp.server;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonProperty;

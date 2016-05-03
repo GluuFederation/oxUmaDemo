@@ -1,4 +1,4 @@
-package org.xdi.uma.demo.common.server;
+package org.xdi.uma.demo.rp.server;
 
 import org.apache.log4j.Logger;
 import org.xdi.oxauth.client.TokenClient;
@@ -6,6 +6,7 @@ import org.xdi.oxauth.client.TokenResponse;
 import org.xdi.oxauth.model.uma.UmaConfiguration;
 import org.xdi.oxauth.model.uma.UmaScopeType;
 import org.xdi.oxauth.model.uma.wrapper.Token;
+import org.xdi.uma.demo.common.server.LogList;
 import org.xdi.uma.demo.common.server.ref.ILogList;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.util.InterfaceRegistry;
