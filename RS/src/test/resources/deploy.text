@@ -1,0 +1,1 @@
+wget http://ox.gluu.org/maven/org/xdi/oxuma-demo-rs/1.0-SNAPSHOT/oxuma-demo-rs-1.0-SNAPSHOT.war -O rs.war
