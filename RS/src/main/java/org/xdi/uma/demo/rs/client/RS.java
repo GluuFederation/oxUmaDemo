@@ -144,7 +144,7 @@ public class RS implements EntryPoint {
         });
     }
 
-    private static void handleException(Throwable p_caught) {
+    private static void handleException(Throwable caught) {
         // handle exception here
     }
 

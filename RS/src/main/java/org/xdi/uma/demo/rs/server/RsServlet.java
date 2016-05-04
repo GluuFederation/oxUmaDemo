@@ -85,6 +85,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
             LOG.trace("Configuration file location: " + DIR + fileName);
             return new FileInputStream(file);
         }
+        LOG.trace("Loading configuration from class path: " + fileName);
         return classLoader.getResourceAsStream(fileName);
     }
 
