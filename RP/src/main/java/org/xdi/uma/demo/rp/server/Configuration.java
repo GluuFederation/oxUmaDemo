@@ -28,7 +28,7 @@ public class Configuration {
         }
     }
 
-    public static final String FILE_NAME = "oxuma-conf" + APP_SERVER + ".json";
+    public static final String FILE_NAME = "oxuma-rp-conf" + APP_SERVER + ".json";
 
     private static class Holder {
         private static final Configuration CONF = createConfiguration();
@@ -74,14 +74,6 @@ public class Configuration {
     private String authorizeUrl;
     @JsonProperty(value = "tokenUrl")
     private String tokenUrl;
-    @JsonProperty(value = "umaUserId")
-    private String umaUserId;
-    @JsonProperty(value = "umaUserSecret")
-    private String umaUserSecret;
-    @JsonProperty(value = "umaPatClientId")
-    private String umaPatClientId;
-    @JsonProperty(value = "umaPatClientSecret")
-    private String umaPatClientSecret;
     @JsonProperty(value = "umaRedirectUri")
     private String umaRedirectUri;
     @JsonProperty(value = "umaAmHost")
@@ -162,33 +154,6 @@ public class Configuration {
         tokenUrl = p_tokenUrl;
     }
 
-    public String getUmaUserId() {
-        return umaUserId;
-    }
-
-    public void setUmaUserId(String p_umaUserId) {
-        umaUserId = p_umaUserId;
-    }
-
-    public String getUmaUserSecret() {
-        return umaUserSecret;
-    }
-
-    public void setUmaUserSecret(String p_umaUserSecret) {
-        umaUserSecret = p_umaUserSecret;
-    }
-
-    public String getUmaPatClientId() {
-        return umaPatClientId;
-    }
-
-    public void setUmaPatClientId(String p_umaPatClientId) {
-        umaPatClientId = p_umaPatClientId;
-    }
-
-    public String getUmaPatClientSecret() {
-        return umaPatClientSecret;
-    }
 
     public String getRsPhoneWsUrl() {
         return rsPhoneWsUrl;
@@ -196,10 +161,6 @@ public class Configuration {
 
     public void setRsPhoneWsUrl(String p_rsPhoneWsUrl) {
         rsPhoneWsUrl = p_rsPhoneWsUrl;
-    }
-
-    public void setUmaPatClientSecret(String p_umaPatClientSecret) {
-        umaPatClientSecret = p_umaPatClientSecret;
     }
 
     public String getUmaRedirectUri() {
