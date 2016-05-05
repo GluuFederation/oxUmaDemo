@@ -3,8 +3,10 @@ package org.xdi.uma.demo.rp.server;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.python.google.common.base.Strings;
+import org.xdi.uma.demo.common.server.ConfigurationLocator;
 import org.xdi.util.Util;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -18,11 +20,6 @@ public class Configuration {
 
     private static final Logger LOG = Logger.getLogger(Configuration.class);
 
-//    private static final String BASE_DIR = System.getProperty("catalina.home") != null ?
-//            System.getProperty("catalina.home") :
-//            System.getProperty("jboss.home.dir");
-//    private static final String DIR = BASE_DIR + File.separator + "conf" + File.separator;
-
     static {
         if (!Strings.isNullOrEmpty(APP_SERVER)) {
             APP_SERVER = "-" + APP_SERVER;
@@ -32,7 +29,6 @@ public class Configuration {
     }
 
     public static final String FILE_NAME = "oxuma-conf" + APP_SERVER + ".json";
-//    public static final String FILE_PATH = DIR + FILE_NAME;
 
     private static class Holder {
         private static final Configuration CONF = createConfiguration();
@@ -40,15 +36,25 @@ public class Configuration {
         private static Configuration createConfiguration() {
             try {
                 try {
-//                    return Util.createJsonMapper().readValue(new File(FILE_PATH), Configuration.class);
-                    final InputStream stream = Configuration.class.getResourceAsStream("/" + FILE_NAME);
-                    final Configuration c = Util.createJsonMapper().readValue(stream, Configuration.class);
-                    if (c != null) {
+                    Configuration configuration = null;
+                    final File file = new File(ConfigurationLocator.getDir() + FILE_NAME);
+                    if (file.exists()) {
+                        configuration = Util.createJsonMapper().readValue(file, Configuration.class);
+                    } else {
+                        LOG.error("Unable to load RP configuration file from :" + file.getAbsolutePath());
+                    }
+
+                    if (configuration == null) {
+                        final InputStream stream = Configuration.class.getClassLoader().getResourceAsStream(FILE_NAME);
+                        configuration = Util.createJsonMapper().readValue(stream, Configuration.class);
+                    }
+
+                    if (configuration != null) {
                         LOG.info("RS configuration loaded successfully.");
+                        return configuration;
                     } else {
                         LOG.error("Failed to load RS configuration.");
                     }
-                    return c;
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);
                 }
