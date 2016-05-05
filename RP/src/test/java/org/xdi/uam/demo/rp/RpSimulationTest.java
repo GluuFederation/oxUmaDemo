@@ -60,11 +60,10 @@ public class RpSimulationTest {
         final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(umaConfiguration);
         final Configuration c = Configuration.getInstance();
 
-        final Token aat = UmaClient.requestAat(c.getAuthorizeUrl(), c.getTokenUrl(), c.getUmaUserId(), c.getUmaUserSecret(),
-                c.getUmaAatClientId(), c.getUmaAatClientSecret(), c.getUmaRedirectUri());
+        final Token aat = UmaClient.requestAat(c.getTokenUrl(), c.getUmaAatClientId(), c.getUmaAatClientSecret());
 
         if (aat != null) {
-            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat.getAccessToken(), c.getUmaAmHost());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat.getAccessToken(), c.amHost());
 
             try {
                 doCall(rptResponse.getRpt(), aat.getAccessToken());
@@ -82,7 +81,7 @@ public class RpSimulationTest {
                     final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(umaConfiguration);
                     final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                             "Bearer " + aat.getAccessToken(),
-                            c.getUmaAmHost(),
+                            c.amHost(),
                             authorizationRequest);
                     if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                         System.out.println("RPT is authorized.");

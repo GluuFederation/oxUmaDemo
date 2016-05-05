@@ -8,6 +8,7 @@ import org.xdi.util.Util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 
 /**
  * @author Yuriy Zabrovarnyy
@@ -74,16 +75,8 @@ public class Configuration {
     private String authorizeUrl;
     @JsonProperty(value = "tokenUrl")
     private String tokenUrl;
-    @JsonProperty(value = "umaRedirectUri")
-    private String umaRedirectUri;
-    @JsonProperty(value = "umaAmHost")
-    private String umaAmHost;
     @JsonProperty(value = "umaMetaDataUrl")
     private String umaMetaDataUrl;
-    @JsonProperty(value = "rsScope")
-    private String rsScope;
-    @JsonProperty(value = "rsHost")
-    private String rsHost;
     @JsonProperty(value = "umaAatClientId")
     private String umaAatClientId;
     @JsonProperty(value = "umaAatClientSecret")
@@ -130,12 +123,14 @@ public class Configuration {
         umaAatClientSecret = p_umaAatClientSecret;
     }
 
-    public String getRsHost() {
-        return rsHost;
-    }
-
-    public void setRsHost(String p_rsHost) {
-        rsHost = p_rsHost;
+    public String rsHost() {
+        try {
+            URI uri = new URI(redirectUri);
+            return uri.getHost();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return "";
     }
 
     public String getAuthorizeUrl() {
@@ -154,7 +149,6 @@ public class Configuration {
         tokenUrl = p_tokenUrl;
     }
 
-
     public String getRsPhoneWsUrl() {
         return rsPhoneWsUrl;
     }
@@ -163,20 +157,14 @@ public class Configuration {
         rsPhoneWsUrl = p_rsPhoneWsUrl;
     }
 
-    public String getUmaRedirectUri() {
-        return umaRedirectUri;
-    }
-
-    public void setUmaRedirectUri(String p_umaRedirectUri) {
-        umaRedirectUri = p_umaRedirectUri;
-    }
-
-    public String getUmaAmHost() {
-        return umaAmHost;
-    }
-
-    public void setUmaAmHost(String p_umaAmHost) {
-        umaAmHost = p_umaAmHost;
+    public String amHost() {
+        try {
+            URI uri = new URI(umaMetaDataUrl);
+            return uri.getHost();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return "";
     }
 
     public String getUmaMetaDataUrl() {
@@ -185,13 +173,5 @@ public class Configuration {
 
     public void setUmaMetaDataUrl(String p_umaMetaDataUrl) {
         umaMetaDataUrl = p_umaMetaDataUrl;
-    }
-
-    public String getRsScope() {
-        return rsScope;
-    }
-
-    public void setRsScope(String p_rsScope) {
-        rsScope = p_rsScope;
     }
 }

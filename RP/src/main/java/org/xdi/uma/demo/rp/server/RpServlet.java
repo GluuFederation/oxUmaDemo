@@ -160,7 +160,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                         final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
                         final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                                 "Bearer " + aat,
-                                c.getUmaAmHost(),
+                                c.amHost(),
                                 authorizationRequest);
                         if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                             LOG.debug("RPT is authorized.");
@@ -230,7 +230,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         final String loginUrl = Configuration.getInstance().getLoginUrl();
         final String redirectUri = Configuration.getInstance().getRedirectUri();
         final String aatClientId = Configuration.getInstance().getUmaAatClientId();
-        final String umaAuthorizationScope = "http%3A%2F%2Fdocs.kantarainitiative.org%2Fuma%2Fscopes%2Fauthz.json";
+        final String umaAuthorizationScope = "http%3A%2F%2Fdocs.kantarainitiative.org%2Fuma%2Fscopes%2Fauthz.json%20uma_authorization";
         final String result = String.format(loginUrl, umaAuthorizationScope, aatClientId, redirectUri);
         LOG.trace("getLoginUrl(), url: " + result);
         return result;
@@ -257,8 +257,8 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         final Configuration serverConf = Configuration.getInstance();
 
         Conf conf = new Conf();
-        conf.setAmHost(serverConf.getUmaAmHost());
-        conf.setRsHost(serverConf.getRsHost());
+        conf.setAmHost(serverConf.amHost());
+        conf.setRsHost(serverConf.rsHost());
         return conf;
     }
 
@@ -275,7 +275,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         try {
             final Configuration c = Configuration.getInstance();
             final CreateRptService rptService = UmaClientFactory.instance().createRequesterPermissionTokenService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
-            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.getUmaAmHost());
+            final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.amHost());
             if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
                 final String result = rptResponse.getRpt();
                 InterfaceRegistry.put(IRpt.class, result);

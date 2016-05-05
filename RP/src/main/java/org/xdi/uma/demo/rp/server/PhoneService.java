@@ -44,7 +44,7 @@ public class PhoneService {
 
     public Phones getPhonesVerbose(String p_rpt) {
         LOG.debug("Try to get (view) phones... , rpt:" + p_rpt);
-        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost());
+        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().amHost());
         if (phones != null) {
             LOG.debug("Got phones from client: " + CommonUtils.asJsonSilently(phones));
             return phones;
@@ -85,7 +85,7 @@ public class PhoneService {
             final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
             final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                     "Bearer " + p_aat,
-                    c.getUmaAmHost(),
+                    c.amHost(),
                     authorizationRequest);
             if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
                 LOG.debug("RPT is authorized.");
@@ -100,7 +100,7 @@ public class PhoneService {
 
     private boolean addPhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to add phone number: " + p_phone);
-        final RsResponse response = service().add("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost(), p_phone);
+        final RsResponse response = service().add("Bearer " + p_rpt, Configuration.getInstance().amHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone added successfully. Phone added: " + p_phone);
             return response.getStatus() == Status.CREATED;
@@ -126,7 +126,7 @@ public class PhoneService {
 
     private boolean removePhoneImpl(String p_rpt, String p_phone) {
         LOG.debug("Try to remove phone numbers: " + p_phone);
-        final RsResponse response = service().remove("Bearer " + p_rpt, Configuration.getInstance().getUmaAmHost(), p_phone);
+        final RsResponse response = service().remove("Bearer " + p_rpt, Configuration.getInstance().amHost(), p_phone);
         if (response != null) {
             LOG.debug("Phone removed successfully. Phone: " + p_phone);
             return response.getStatus() == Status.DELETED;
