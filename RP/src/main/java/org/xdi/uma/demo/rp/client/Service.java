@@ -16,7 +16,7 @@ import java.util.List;
 public interface Service extends RemoteService {
     public List<Msg> getMessageList();
 
-    public String obtainNewAat();
+    public String obtainNewAatViaClientAuthentication();
 
     public String obtainNewRpt();
 

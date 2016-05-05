@@ -15,7 +15,7 @@ import java.util.List;
 public interface ServiceAsync {
     void getMessageList(AsyncCallback<List<Msg>> async);
 
-    void obtainNewAat(AsyncCallback<String> async);
+    void obtainNewAatViaClientAuthentication(AsyncCallback<String> async);
 
     void clearLogs(AsyncCallback<Void> p_asyncCallback);
 

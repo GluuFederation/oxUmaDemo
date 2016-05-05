@@ -16,11 +16,6 @@ import java.util.Date;
 public class LoginController {
 
     /**
-     * Access token cookie name.
-     */
-    public static final String ACCESS_TOKEN_COOKIE_NAME = "oxuma.rp.access_token";
-
-    /**
      * One day
      */
     public static long ONE_DAY_IN_MILIS = (long) 1000.0 * 60 * 60 * 24;

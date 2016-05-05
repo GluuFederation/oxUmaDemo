@@ -11,20 +11,20 @@ import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.model.uma.*;
 import org.xdi.oxauth.model.uma.wrapper.Token;
-import org.xdi.uma.demo.rp.shared.Conf;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
-import org.xdi.uma.demo.common.server.ref.IAat;
 import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.common.server.ref.IRpt;
 import org.xdi.uma.demo.rp.client.LoginController;
 import org.xdi.uma.demo.rp.client.Service;
+import org.xdi.uma.demo.rp.shared.Conf;
 import org.xdi.util.InterfaceRegistry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -54,9 +54,9 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                 throw new ServletException();
             }
 
-            Token aat = obtainAat();
+            Token aat = clientAuthenticationAat();
             if (aat == null) {
-                LOG.error("Failed to obtain AAT.");
+                LOG.error("Failed to obtain AAT via client authentication.");
                 throw new ServletException();
             }
 
@@ -72,9 +72,9 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     @Override
-    public String obtainNewAat() {
+    public String obtainNewAatViaClientAuthentication() {
         try {
-            return obtainAat().getAccessToken();
+            return clientAuthenticationAat().getAccessToken();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
@@ -108,9 +108,6 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         }
         LOG.trace("Returns empty AAT cookie.");
         return "";
-//        String aat = InterfaceRegistry.get(IAatToken.class);
-//        LOG.trace("Access aat: " + aat);
-//        return aat;
     }
 
     @Override
@@ -221,7 +218,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     @Override
     public void clearState() {
         clearLogs();
-        //obtainNewAat();
+        //obtainNewAatViaClientAuthentication();
         obtainNewRpt();
     }
 
@@ -237,19 +234,19 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     @Override
-    public void storeAat(String p_accessToken) {
-//        InterfaceRegistry.put(IAatToken.class, p_accessToken);
+    public void storeAat(String accessToken) {
+        Token token = new Token();
+        token.setAccessToken(accessToken);
 
-        final HttpServletRequest request = getThreadLocalRequest();
-        final Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie c : cookies) {
-                if (c.getName().equals(LoginController.ACCESS_TOKEN_COOKIE_NAME)) {
-                    LOG.trace("Set AAT cookie path to '/'");
-                    c.setPath("/");
-                }
-            }
-        }
+        storeAat(token);
+    }
+
+    private void storeAat(Token token) {
+        getHttpSession().setAttribute("aat", token);
+    }
+
+    private HttpSession getHttpSession() {
+        return this.getThreadLocalRequest().getSession(true);
     }
 
     @Override
@@ -289,13 +286,13 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         return null;
     }
 
-    public Token obtainAat() {
+    public Token clientAuthenticationAat() {
         try {
             final Configuration c = Configuration.getInstance();
             LOG.trace("Try to obtain AAT token...");
             final Token aatToken = CommonUtils.requestAat(c.getTokenUrl(), c.getUmaAatClientId(), c.getUmaAatClientSecret());
             if (aatToken != null) {
-                InterfaceRegistry.put(IAat.class, aatToken);
+                storeAat(aatToken);
                 LOG.trace("AAT token is successfully obtained.");
                 return aatToken;
             }

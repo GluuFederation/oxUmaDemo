@@ -372,7 +372,7 @@ public class RP implements EntryPoint {
 
 //                final ProgressDialog progressDialog = new ProgressDialog("Perform operation...");
 //                progressDialog.show();
-//                getService().obtainNewAat(new AsyncCallback<String>() {
+//                getService().obtainNewAatViaClientAuthentication(new AsyncCallback<String>() {
 //                    @Override
 //                    public void onFailure(Throwable caught) {
 //                        progressDialog.hide();
