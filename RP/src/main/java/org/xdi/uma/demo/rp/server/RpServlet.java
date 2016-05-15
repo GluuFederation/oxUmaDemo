@@ -46,7 +46,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
             final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
             if (umaAmConfiguration != null) {
-                InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
+                StaticStorage.put(UmaConfiguration.class, umaAmConfiguration);
                 LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
                 LOG.info("RP Server started successfully.");
             } else {

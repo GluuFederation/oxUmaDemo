@@ -3,9 +3,9 @@ package org.xdi.uma.demo.rs.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.xdi.oxd.rs.protect.RsProtector;
 import org.xdi.oxd.rs.protect.RsResource;
+import org.xdi.oxd.rs.protect.StaticStorage;
 import org.xdi.oxd.rs.protect.resteasy.*;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.server.ConfigurationLocator;
@@ -54,8 +54,8 @@ public class RsServlet extends RemoteServiceServlet implements Service {
             resourceRegistrar.register(values);
             LOG.info("Resources are registered at AS: " + configuration.getUmaWellknownEndpoint());
 
-            ResteasyProviderFactory.pushContext(PatProvider.class, patProvider);
-            ResteasyProviderFactory.pushContext(ResourceRegistrar.class, resourceRegistrar);
+            StaticStorage.put(PatProvider.class, patProvider);
+            StaticStorage.put(ResourceRegistrar.class, resourceRegistrar);
 
             LOG.info("Resource Server started successfully.");
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public String obtainNewPat() {
-        return ResteasyProviderFactory.getContextData(PatProvider.class).renewPat();
+        return StaticStorage.get(PatProvider.class).renewPat();
     }
 
     @Override

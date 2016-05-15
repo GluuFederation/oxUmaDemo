@@ -6,8 +6,8 @@ import org.jboss.resteasy.core.ResourceMethod;
 import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
+import org.xdi.oxd.rs.protect.StaticStorage;
 import org.xdi.oxd.rs.protect.resteasy.ResourceRegistrar;
 import org.xdi.oxd.rs.protect.resteasy.RptPreProcessInterceptor;
 
@@ -28,7 +28,7 @@ public class UmaProtector implements PreProcessInterceptor {
 
     public UmaProtector() {
         try {
-            interceptor = new RptPreProcessInterceptor(ResteasyProviderFactory.getContextData(ResourceRegistrar.class));
+            interceptor = new RptPreProcessInterceptor(StaticStorage.get(ResourceRegistrar.class));
             LOG.info("UMA Protector started successfully.");
         } catch (Exception e) {
             throw new RuntimeException("Failed to create HTTP interceptor.", e);
