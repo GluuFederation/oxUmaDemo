@@ -8,18 +8,12 @@ import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
 import org.xdi.oxauth.client.uma.wrapper.UmaClient;
-import org.xdi.oxauth.model.uma.PermissionTicket;
-import org.xdi.oxauth.model.uma.RPTResponse;
-import org.xdi.oxauth.model.uma.RptAuthorizationRequest;
-import org.xdi.oxauth.model.uma.RptAuthorizationResponse;
-import org.xdi.oxauth.model.uma.UmaConfiguration;
+import org.xdi.oxauth.model.uma.*;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Phones;
 import org.xdi.uma.demo.rp.server.Configuration;
-import org.xdi.uma.demo.rp.server.Uma;
-import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.uma.demo.rp.server.PhoneService;
-import org.xdi.uma.demo.rp.server.RpServlet;
+import org.xdi.uma.demo.rp.server.Uma;
 import org.xdi.util.InterfaceRegistry;
 import org.xdi.util.Util;
 
@@ -39,12 +33,11 @@ public class RpSimulationTest {
         if (c != null) {
             final UmaConfiguration umaAmConfiguration = UmaClientFactory.instance().createMetaDataConfigurationService(c.getUmaMetaDataUrl()).getMetadataConfiguration();
             if (umaAmConfiguration != null) {
-                InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
+                InterfaceRegistry.put(UmaConfiguration.class, umaAmConfiguration);
             }
         }
 
-
-        RpServlet.obtainRpt("8a740bcb-b8e2-4301-a124-7d9b58582285");
+        //RpServlet.obtainRpt("8a740bcb-b8e2-4301-a124-7d9b58582285");
     }
 
     @Test
