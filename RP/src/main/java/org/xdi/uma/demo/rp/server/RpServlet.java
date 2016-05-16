@@ -13,17 +13,11 @@ import org.xdi.oxauth.model.uma.*;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.gwt.Msg;
 import org.xdi.uma.demo.common.gwt.Phones;
-import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
-import org.xdi.uma.demo.common.server.ref.IRpt;
-import org.xdi.uma.demo.rp.client.LoginController;
 import org.xdi.uma.demo.rp.client.Service;
 import org.xdi.uma.demo.rp.shared.Conf;
-import org.xdi.util.InterfaceRegistry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -42,17 +36,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         super.init(config);
 
         try {
-            final Configuration c = Configuration.getInstance();
-
-            final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
-            if (umaAmConfiguration != null) {
-                StaticStorage.put(UmaConfiguration.class, umaAmConfiguration);
-                LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
-                LOG.info("RP Server started successfully.");
-            } else {
-                LOG.error("Unable to load Authorization Server configuration. Failed to start RP Server.");
-                throw new ServletException();
-            }
+            loadUmaConfiguration();
 
             Token aat = clientAuthenticationAat();
             if (aat == null) {
@@ -63,6 +47,21 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         } catch (Exception e) {
             LOG.error("Failed to start RP Demo Application. " + e.getMessage(), e);
             throw new ServletException(e);
+        }
+    }
+
+    private UmaConfiguration loadUmaConfiguration() throws ServletException {
+        final Configuration c = Configuration.getInstance();
+
+        final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
+        if (umaAmConfiguration != null) {
+            StaticStorage.put(UmaConfiguration.class, umaAmConfiguration);
+            LOG.info("Loaded Authorization Server configuration: " + CommonUtils.asJsonSilently(umaAmConfiguration));
+            LOG.info("RP Server started successfully.");
+            return umaAmConfiguration;
+        } else {
+            LOG.error("Unable to load Authorization Server configuration. Failed to start RP Server.");
+            throw new ServletException();
         }
     }
 
@@ -96,17 +95,12 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     public String getAat() {
-        final HttpServletRequest request = getThreadLocalRequest();
-        final Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie c : cookies) {
-                if (c.getName().equals(LoginController.ACCESS_TOKEN_COOKIE_NAME)) {
-                    LOG.trace("Returns AAT from cookie, aat: " + c.getValue());
-                    return c.getValue();
-                }
-            }
+        Object aat = getHttpSession().getAttribute("aat");
+        if (aat instanceof String && !Strings.isNullOrEmpty((String) aat)) {
+            LOG.trace("Returns AAT from session, aat: " + aat);
+            return (String) aat;
         }
-        LOG.trace("Returns empty AAT cookie.");
+        LOG.trace("No AAT in session.");
         return "";
     }
 
@@ -260,14 +254,14 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     public String getRpt(String aat) {
-        final String rpt = InterfaceRegistry.get(IRpt.class);
-        if (rpt == null) {
-            return obtainRpt(aat);
+        final Object rpt = getHttpSession().getAttribute("rpt");
+        if (rpt instanceof String && Strings.isNullOrEmpty((String) rpt)) {
+            return (String) rpt;
         }
-        return rpt;
+        return obtainRpt(aat);
     }
 
-    public static String obtainRpt(String aat) {
+    public String obtainRpt(String aat) {
         LOG.debug("Try to obtain RPT with AAT on Authorization Server... , aat:" + aat);
         try {
             final Configuration c = Configuration.getInstance();
@@ -275,7 +269,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
             final RPTResponse rptResponse = rptService.createRPT("Bearer " + aat, c.amHost());
             if (rptResponse != null && StringUtils.isNotBlank(rptResponse.getRpt())) {
                 final String result = rptResponse.getRpt();
-                InterfaceRegistry.put(IRpt.class, result);
+                getHttpSession().setAttribute("rpt", result);
                 LOG.debug("RPT is successfully obtained from AM. RPT: " + result);
                 return result;
             }
