@@ -83,15 +83,18 @@ public class RP implements EntryPoint {
         if (LoginController.hasAccessToken()) {
             showUI();
         } else {
-            LoginController.userLogin();
+//            LoginController.userLogin();
+            LoginController.clientAuthentication();
         }
     }
 
     private void initEventBus() {
         getEventBus().addHandler(LoginEvent.TYPE, new LoginEvent.Handler() {
             @Override
-            public void update(LoginEvent p_event) {
-                showUI();
+            public void update(LoginEvent event) {
+                if (event.isLogin()) {
+                    showUI();
+                }
             }
         });
     }

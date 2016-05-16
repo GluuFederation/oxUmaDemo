@@ -13,7 +13,7 @@ public class LoginEvent extends GwtEvent<LoginEvent.Handler> {
     /**
      * Handler of event.
      */
-    public static interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
 
         /**
          * Handles state based on event object.

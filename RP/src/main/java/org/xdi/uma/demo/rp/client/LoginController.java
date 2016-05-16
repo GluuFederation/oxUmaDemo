@@ -1,12 +1,9 @@
 package org.xdi.uma.demo.rp.client;
 
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.xdi.gwt.client.GwtUtils;
 import org.xdi.uma.demo.rp.client.events.LoginEvent;
-
-import java.util.Date;
 
 /**
  * @author Yuriy Zabrovarnyy
@@ -15,19 +12,14 @@ import java.util.Date;
 
 public class LoginController {
 
-    /**
-     * One day
-     */
-    public static long ONE_DAY_IN_MILIS = (long) 1000.0 * 60 * 60 * 24;
+    private static String aat = null;
 
     /**
      * Sets login cookie.
      *
      * @param accessToken access token
      */
-    public static void setLoginCookie(String accessToken) {
-        final long tomorrowMilis = new Date().getTime() + ONE_DAY_IN_MILIS;
-        Cookies.setCookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, new Date(tomorrowMilis));
+    public static void storeAat(String accessToken) {
         RP.getService().storeAat(accessToken, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable p_throwable) {
@@ -41,11 +33,28 @@ public class LoginController {
         });
     }
 
+    public static void clientAuthentication() {
+        if (!hasAccessToken()) {
+            RP.getService().obtainNewAatViaClientAuthentication(new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    GwtUtils.showError("Unable to obtain AAT via client authentication.");
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    aat = result;
+                    RP.getEventBus().fireEvent(new LoginEvent(true));
+                }
+            });
+        }
+    }
+
     public static void userLogin() {
         if (!hasAccessToken()) {
             final String accessToken = parseAccessToken();
             if (accessToken != null && accessToken.length() > 0 && !LoginController.hasAccessToken()) {
-                LoginController.setLoginCookie(accessToken);
+                LoginController.storeAat(accessToken);
                 RP.getEventBus().fireEvent(new LoginEvent(true));
                 return;
             }
@@ -87,7 +96,7 @@ public class LoginController {
     }
 
     public static String getAccessToken() {
-        return Cookies.getCookie(ACCESS_TOKEN_COOKIE_NAME);
+        return aat;
     }
 
     /**
@@ -96,11 +105,10 @@ public class LoginController {
      * @return whether access token is saved in cookie
      */
     public static boolean hasAccessToken() {
-        final String token = Cookies.getCookie(ACCESS_TOKEN_COOKIE_NAME);
-        return token != null && token.length() > 0;
+        return aat != null && aat.length() > 0;
     }
 
     public static void logout() {
-        Cookies.removeCookie(ACCESS_TOKEN_COOKIE_NAME);
+        aat = null;
     }
 }
