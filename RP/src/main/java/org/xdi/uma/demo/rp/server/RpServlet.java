@@ -119,8 +119,8 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                 if (phones != null) {
                     return phones;
                 }
-            } catch (Exception e) {
-                LOG.debug("Response: unauthorized. RP doesn't present RPT.");
+            } catch (ClientResponseFailure e) {
+                LOG.debug("Response: unauthorized. RP doesn't present RPT, RS returns ticket: " + e.getResponse().getEntity(String.class)) ;
             }
 
             final Configuration c = Configuration.getInstance();
@@ -139,7 +139,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
                 } catch (ClientResponseFailure e) {
                     final ClientResponse<PermissionTicket> response = e.getResponse();
                     if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
-                        LOG.debug("Request forbidden. RPT doesn't have enough permissions.");
+                        LOG.debug("Request forbidden. RPT " + rpt + " doesn't have enough permissions.");
                         final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
                         final String ticket = ticketWrapper.getTicket();
                         LOG.debug("RS returns permission ticket: " + ticket);
@@ -147,7 +147,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
 
                         LOG.debug("Try to authorize RPT with ticket...");
-                        final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
+                        final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
                         final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
                                 "Bearer " + aat,
                                 c.amHost(),
@@ -254,7 +254,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
 
     public String getRpt(String aat) {
         final Object rpt = getHttpSession().getAttribute("rpt");
-        if (rpt instanceof String && Strings.isNullOrEmpty((String) rpt)) {
+        if (rpt instanceof String && !Strings.isNullOrEmpty((String) rpt)) {
             return (String) rpt;
         }
         return obtainRpt(aat);

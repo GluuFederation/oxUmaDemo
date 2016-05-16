@@ -52,7 +52,8 @@ public class RP implements EntryPoint {
     private static final TextArea TEXT_AREA = new TextArea();
     private static final EventBus EVENT_BUS = new SimpleEventBus();
     private static Conf CONF;
-    private final ListStore<String> m_store = new ListStore<String>(new ModelKeyProvider<String>() {
+
+    private final ListStore<String> store = new ListStore<String>(new ModelKeyProvider<String>() {
         @Override
         public String getKey(String item) {
             return item;
@@ -144,7 +145,7 @@ public class RP implements EntryPoint {
     }
 
     private IsWidget createWestWidget() {
-        final ListView<String, String> list = new ListView<String, String>(m_store, new IdentityValueProvider<String>());
+        final ListView<String, String> list = new ListView<String, String>(store, new IdentityValueProvider<String>());
         list.setSelectionModel(m_sm);
 
         final TextButton viewButton = new TextButton("View");
@@ -195,11 +196,11 @@ public class RP implements EntryPoint {
                         try {
                             refresh();
                             final List<String> phones = p_phones.getPhones();
-                            m_store.clear();
+                            store.clear();
                             if (phones != null && !phones.isEmpty()) {
-                                m_store.addAll(phones);
+                                store.addAll(phones);
                             }
-                            m_store.commitChanges();
+                            store.commitChanges();
                         } finally {
                             d.hide();
                         }
@@ -229,8 +230,8 @@ public class RP implements EntryPoint {
                                 public void onSuccess(Boolean p_boolean) {
                                     refresh();
                                     if (p_boolean != null && p_boolean) {
-                                        m_store.add(newPhone);
-                                        m_store.commitChanges();
+                                        store.add(newPhone);
+                                        store.commitChanges();
                                     }
                                 }
                             });
@@ -255,15 +256,15 @@ public class RP implements EntryPoint {
                     }
 
                     @Override
-                    public void onSuccess(Phones p_phones) {
+                    public void onSuccess(Phones phones) {
                         try {
                             refresh();
-                            final List<String> phones = p_phones.getPhones();
-                            m_store.clear();
-                            if (phones != null && !phones.isEmpty()) {
-                                m_store.addAll(phones);
+                            store.clear();
+
+                            if (phones != null && phones.getPhones() != null && !phones.getPhones().isEmpty()) {
+                                store.addAll(phones.getPhones());
                             }
-                            m_store.commitChanges();
+                            store.commitChanges();
                         } finally {
                             d.hide();
                         }
@@ -288,8 +289,8 @@ public class RP implements EntryPoint {
                     @Override
                     public void onSuccess(Void p_void) {
                         d.hide();
-                        m_store.clear();
-                        m_store.commitChanges();
+                        store.clear();
+                        store.commitChanges();
                         TEXT_AREA.setValue("");
                         refresh();
                     }
@@ -317,8 +318,8 @@ public class RP implements EntryPoint {
                     public void onSuccess(Boolean p_result) {
                         refresh();
                         if (p_result != null && p_result) {
-                            m_store.remove(phone);
-                            m_store.commitChanges();
+                            store.remove(phone);
+                            store.commitChanges();
                         } else {
                             GwtUtils.showInformation("Failed to remove phone.");
                         }
@@ -366,12 +367,12 @@ public class RP implements EntryPoint {
             }
         });
 
-        final TextButton newAatButton = new TextButton("Obtain new AAT token");
+        final TextButton newAatButton = new TextButton("Obtain new AAT via client authentication");
         newAatButton.addSelectHandler(new SelectEvent.SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 LoginController.logout();
-                LoginController.userLogin();
+                LoginController.clientAuthentication();
 
 //                final ProgressDialog progressDialog = new ProgressDialog("Perform operation...");
 //                progressDialog.show();
@@ -454,7 +455,7 @@ public class RP implements EntryPoint {
         final HBoxLayoutContainer h = new HBoxLayoutContainer();
         h.add(refreshButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
         h.add(clearButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
-//        h.add(newAatButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
+        h.add(newAatButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
         h.add(newRptButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
         h.add(new Label(), spaceData);
         h.add(logoutButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
