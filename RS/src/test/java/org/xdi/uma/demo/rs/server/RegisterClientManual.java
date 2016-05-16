@@ -40,10 +40,10 @@ public class RegisterClientManual {
 
     public static void main(String[] args) throws Exception {
 
-        String registrationEndpoint = "https://localhost:8443/seam/resource/restv1/oxauth/register";
+        String registrationEndpoint = "https://kantara.gluu.org/oxauth/seam/resource/restv1/oxauth/register";
 
-        RegisterRequest registerRequest = new RegisterRequest(ApplicationType.WEB, "oxUma Demo",
-                StringUtils.spaceSeparatedToList("https://client.example.com/cb"));
+        RegisterRequest registerRequest = new RegisterRequest(ApplicationType.WEB, "oxUma Demo RP",
+                StringUtils.spaceSeparatedToList("https://kantara.gluu.org/rp/rp.html"));
         registerRequest.setResponseTypes(Arrays.asList(ResponseType.CODE, ResponseType.ID_TOKEN, ResponseType.TOKEN));
 
         RegisterClient registerClient = new RegisterClient(registrationEndpoint);

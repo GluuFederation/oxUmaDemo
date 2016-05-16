@@ -38,4 +38,6 @@ public interface Service extends RemoteService {
     void storeAat(String p_accessToken);
 
     Conf getConf();
+
+    Phones viewWithGat();
 }

@@ -36,4 +36,6 @@ public interface ServiceAsync {
     void storeAat(String p_accessToken, AsyncCallback<Void> async);
 
     void getConf(AsyncCallback<Conf> async);
+
+    void viewWithGat(AsyncCallback<Phones> asyncCallback);
 }

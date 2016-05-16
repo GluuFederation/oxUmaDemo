@@ -1,11 +1,13 @@
 package org.xdi.uma.demo.rp.server;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.ClientResponseFailure;
 import org.python.google.common.base.Strings;
+import org.xdi.oxauth.client.uma.CreateGatService;
 import org.xdi.oxauth.client.uma.CreateRptService;
 import org.xdi.oxauth.client.uma.RptAuthorizationRequestService;
 import org.xdi.oxauth.client.uma.UmaClientFactory;
@@ -180,6 +182,39 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
+        return null;
+    }
+
+    @Override
+    public Phones viewWithGat() {
+        String gat = "";
+
+        try {
+            gat = obtainGat(Lists.newArrayList("http://photoz.example.com/dev/actions/all"));
+            LOG.trace("GAT obtains successfully. GAT: " + gat);
+            return PhoneService.getInstance().getPhonesVerbose(gat);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            LOG.error("Failed to fetch phones with GAT : " + gat);
+        }
+        return null;
+    }
+
+    private String obtainGat(List<String> scopes) {
+        try {
+            Configuration c = Configuration.getInstance();
+            CreateGatService gatService = UmaClientFactory.instance().createGatService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
+
+            GatRequest gatRequest = new GatRequest();
+            gatRequest.setScopes(scopes);
+
+            String gat = gatService.createGAT("Bearer " + getAat(), c.amHost(), gatRequest).getRpt();
+            LOG.trace("GAT obtains successfully. GAT: " + gat);
+            return gat;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        LOG.error("Failed to obtain GAT.");
         return null;
     }
 

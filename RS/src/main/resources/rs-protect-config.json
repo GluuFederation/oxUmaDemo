@@ -1,6 +1,6 @@
 {
-    "well_known_endpoint":"https://ce-dev.gluu.org/.well-known/uma-configuration",
-    "pat_client_id":"@!C6D7.3F56.F820.3B0F!0001!2D38.B7FA!0008!FF81!2D39",
-    "pat_client_secret":"8wEJeXmovx0T",
+    "well_known_endpoint":"https://kantara.gluu.org/.well-known/uma-configuration",
+    "pat_client_id":"@!5432.93A5.147D.F693!0001!4697.0299!0008!EC8F.77DC",
+    "pat_client_secret":"7a5f0584-7d9c-4ae4-8a4d-73960a764a35",
     "trust_all":true
 }

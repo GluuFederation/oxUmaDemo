@@ -347,6 +347,7 @@ public class RP implements EntryPoint {
 
         final VerticalLayoutContainer v = new VerticalLayoutContainer();
         v.add(toolbar, new VerticalLayoutContainer.VerticalLayoutData(-1, -1, DEFAULT_MARGINS));
+        v.add(createGatToolbar(), new VerticalLayoutContainer.VerticalLayoutData(-1, -1, DEFAULT_MARGINS));
         v.add(new Label("Phone number(s):"), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
         v.add(new Label("(hosted by Resource Server on " + CONF.getRsHost()), new VerticalLayoutContainer.VerticalLayoutData(1, -1, DEFAULT_MARGINS));
         v.add(list, new VerticalLayoutContainer.VerticalLayoutData(250, 450, DEFAULT_MARGINS));
@@ -354,6 +355,43 @@ public class RP implements EntryPoint {
         final ContentPanel container = new ContentPanel();
         container.setWidget(v);
         return container;
+    }
+
+    private HBoxLayoutContainer createGatToolbar() {
+        final TextButton viewButton = new TextButton("View with GAT");
+        viewButton.setToolTip("View phones with GAT");
+        viewButton.addSelectHandler(new SelectEvent.SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                final ProgressDialog d = new ProgressDialog("Viewing with GAT...");
+                d.show();
+                getService().viewWithGat(new AsyncCallback<Phones>() {
+                    @Override
+                    public void onFailure(Throwable p_throwable) {
+                        d.hide();
+                        handleException(p_throwable);
+                    }
+
+                    @Override
+                    public void onSuccess(Phones phones) {
+                        try {
+                            refresh();
+                            store.clear();
+                            if (phones.getPhones() != null && !phones.getPhones().isEmpty()) {
+                                store.addAll(phones.getPhones());
+                            }
+                            store.commitChanges();
+                        } finally {
+                            d.hide();
+                        }
+                    }
+                });
+            }
+        });
+
+        final HBoxLayoutContainer toolbar = new HBoxLayoutContainer();
+        toolbar.add(viewButton, new BoxLayoutContainer.BoxLayoutData(DEFAULT_MARGINS));
+        return toolbar;
     }
 
     private VerticalLayoutContainer createCenterWidget() {
