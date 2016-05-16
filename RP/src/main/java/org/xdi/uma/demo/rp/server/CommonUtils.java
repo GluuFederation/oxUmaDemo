@@ -8,7 +8,6 @@ import org.xdi.oxauth.model.uma.UmaScopeType;
 import org.xdi.oxauth.model.uma.wrapper.Token;
 import org.xdi.uma.demo.common.server.LogList;
 import org.xdi.uma.demo.common.server.ref.ILogList;
-import org.xdi.uma.demo.common.server.ref.IMetadataConfiguration;
 import org.xdi.util.InterfaceRegistry;
 import org.xdi.util.Util;
 
@@ -31,14 +30,12 @@ public class CommonUtils {
     }
 
     public static UmaConfiguration getUmaConfiguration() {
-        final UmaConfiguration result = InterfaceRegistry.get(IMetadataConfiguration.class);
+        final UmaConfiguration result = StaticStorage.get(UmaConfiguration.class);
         if (result == null) {
             final Configuration c = Configuration.getInstance();
             if (c != null) {
                 final UmaConfiguration umaAmConfiguration = Uma.discovery(c.getUmaMetaDataUrl());
-                if (umaAmConfiguration != null) {
-                    InterfaceRegistry.put(IMetadataConfiguration.class, umaAmConfiguration);
-                }
+                StaticStorage.put(UmaConfiguration.class, umaAmConfiguration);
                 return umaAmConfiguration;
             }
         }
@@ -78,10 +75,6 @@ public class CommonUtils {
         }
 
         return null;
-    }
-
-    public static Token requestPat(final String tokenUrl, final String umaClientId, final String umaClientSecret, String... scopeArray) throws Exception {
-        return request(tokenUrl, umaClientId, umaClientSecret, UmaScopeType.PROTECTION, scopeArray);
     }
 
     public static Token requestAat(final String tokenUrl, final String umaClientId, final String umaClientSecret, String... scopeArray) throws Exception {
