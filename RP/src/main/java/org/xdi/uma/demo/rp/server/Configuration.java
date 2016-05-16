@@ -36,34 +36,29 @@ public class Configuration {
 
         private static Configuration createConfiguration() {
             try {
-                try {
-                    Configuration configuration = null;
-                    final File file = new File(ConfigurationLocator.getDir() + FILE_NAME);
-                    if (file.exists()) {
-                        configuration = Util.createJsonMapper().readValue(file, Configuration.class);
-                    } else {
-                        LOG.error("Unable to load RP configuration file from :" + file.getAbsolutePath());
-                    }
-
-                    if (configuration == null) {
-                        final InputStream stream = Configuration.class.getClassLoader().getResourceAsStream(FILE_NAME);
-                        configuration = Util.createJsonMapper().readValue(stream, Configuration.class);
-                    }
-
-                    if (configuration != null) {
-                        LOG.info("RS configuration loaded successfully.");
-                        return configuration;
-                    } else {
-                        LOG.error("Failed to load RS configuration.");
-                    }
-                } catch (Exception e) {
-                    LOG.error(e.getMessage(), e);
+                Configuration configuration = null;
+                final File file = new File(ConfigurationLocator.getDir() + FILE_NAME);
+                if (file.exists()) {
+                    configuration = Util.createJsonMapper().readValue(file, Configuration.class);
+                } else {
+                    LOG.error("Unable to load RP configuration file from :" + file.getAbsolutePath());
                 }
-                return null;
+
+                if (configuration == null) {
+                    final InputStream stream = Configuration.class.getClassLoader().getResourceAsStream(FILE_NAME);
+                    configuration = Util.createJsonMapper().readValue(stream, Configuration.class);
+                }
+
+                if (configuration != null) {
+                    LOG.info("RS configuration loaded successfully.");
+                    return configuration;
+                } else {
+                    LOG.error("Failed to load RS configuration.");
+                }
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
-                return null;
             }
+            return null;
         }
     }
 

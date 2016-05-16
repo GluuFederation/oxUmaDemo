@@ -1,10 +1,10 @@
 {
-    "umaMetaDataUrl":"https://ce-dev.gluu.org/.well-known/uma-configuration",
-    "authorizeUrl":"https://ce-dev.gluu.org/oxauth/seam/resource/restv1/oxauth/authorize",
-    "tokenUrl":"https://ce-dev.gluu.org/oxauth/seam/resource/restv1/oxauth/token",
-    "umaAatClientId":"@!C6D7.3F56.F820.3B0F!0001!2D38.B7FA!0008!0068.3E20",
-    "umaAatClientSecret":"uEIGwpq89FAC",
+    "umaMetaDataUrl":"https://kantara.gluu.org/.well-known/uma-configuration",
+    "authorizeUrl":"https://kantara.gluu.org/oxauth/seam/resource/restv1/oxauth/authorize",
+    "tokenUrl":"https://kantara.gluu.org/oxauth/seam/resource/restv1/oxauth/token",
+    "umaAatClientId":"@!5432.93A5.147D.F693!0001!4697.0299!0008!E87C.08B1",
+    "umaAatClientSecret":"a1a7d38d-75f5-49a8-85d5-6db8b8d78742",
     "rsPhoneWsUrl": "http://127.0.0.1:8887/ws/phone",
-    "loginUrl": "https://ce-dev.gluu.org/oxauth/authorize.seam?response_type=code+id_token+token&scope=openid+profile+%s&client_id=%s&redirect_uri=%s&nonce=nonce",
-    "redirectUri":"https://ce-dev.gluu.org/oxuma-rp"
+    "loginUrl": "https://kantara.gluu.org/oxauth/authorize.seam?response_type=code+id_token+token&scope=openid+profile+%s&client_id=%s&redirect_uri=%s&nonce=nonce",
+    "redirectUri":"https://kantara.gluu.org/rp/rp.html"
 }
