@@ -235,7 +235,7 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     private void storeAat(Token token) {
-        getHttpSession().setAttribute("aat", token);
+        getHttpSession().setAttribute("aat", token.getAccessToken());
     }
 
     private HttpSession getHttpSession() {

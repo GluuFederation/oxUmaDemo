@@ -42,9 +42,9 @@ public class PhoneService {
         return service;
     }
 
-    public Phones getPhonesVerbose(String p_rpt) {
-        LOG.debug("Try to get (view) phones... , rpt:" + p_rpt);
-        final Phones phones = service().getPhones("Bearer " + p_rpt, Configuration.getInstance().amHost());
+    public Phones getPhonesVerbose(String rpt) {
+        LOG.debug("Try to get (view) phones... , rpt:" + rpt);
+        final Phones phones = service().getPhones("Bearer " + rpt, Configuration.getInstance().amHost());
         if (phones != null) {
             LOG.debug("Got phones from client: " + CommonUtils.asJsonSilently(phones));
             return phones;
@@ -53,14 +53,14 @@ public class PhoneService {
         return null;
     }
 
-    public Phones getPhones(String p_rpt, String p_aat) {
+    public Phones getPhones(String rpt, String aat) {
         try {
-            return getPhonesVerbose(p_rpt);
+            return getPhonesVerbose(rpt);
         } catch (ClientResponseFailure e) {
-            final boolean authorized = authorizeRpt(p_rpt, p_aat, e);
+            final boolean authorized = authorizeRpt(rpt, aat, e);
             if (authorized) {
                 LOG.trace("Re-try, rpt is authorized now...");
-                final Phones phones = getPhonesVerbose(p_rpt);
+                final Phones phones = getPhonesVerbose(rpt);
                 if (phones != null) {
                     return phones;
                 }

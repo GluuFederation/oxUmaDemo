@@ -14,27 +14,28 @@ import java.util.List;
  */
 @RemoteServiceRelativePath("rpService")
 public interface Service extends RemoteService {
-    public List<Msg> getMessageList();
 
-    public String obtainNewAatViaClientAuthentication();
+    List<Msg> getMessageList();
 
-    public String obtainNewRpt();
+    String obtainNewAatViaClientAuthentication();
 
-    public void clearLogs();
+    String obtainNewRpt();
 
-    public Phones demo();
+    void clearLogs();
 
-    public Phones getPhoneList();
+    Phones demo();
 
-    public boolean removePhone(String p_phone);
+    Phones getPhoneList();
 
-    public boolean addPhone(String p_phone);
+    boolean removePhone(String p_phone);
 
-    public void clearState();
+    boolean addPhone(String p_phone);
 
-    public String getLoginUrl();
+    void clearState();
 
-    public void storeAat(String p_accessToken);
+    String getLoginUrl();
 
-    public Conf getConf();
+    void storeAat(String p_accessToken);
+
+    Conf getConf();
 }
