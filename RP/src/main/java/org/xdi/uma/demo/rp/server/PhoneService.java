@@ -71,30 +71,35 @@ public class PhoneService {
         return null;
     }
 
-    public boolean authorizeRpt(String p_rpt, String p_aat, ClientResponseFailure p_failureResponse) {
-        final ClientResponse<PermissionTicket> response = p_failureResponse.getResponse();
-        if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
-            LOG.debug("Request forbidden. RPT doesn't have enough permissions.");
-            final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
-            final String ticket = ticketWrapper.getTicket();
-            LOG.debug("RS returns permission ticket: " + ticket);
-            final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(p_rpt, ticket);
+    public boolean authorizeRpt(String rpt, String aat, ClientResponseFailure failureResponse) {
+        try {
+            final ClientResponse<PermissionTicket> response = failureResponse.getResponse();
+            if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+                LOG.debug("Request forbidden. RPT doesn't have enough permissions.");
+                final PermissionTicket ticketWrapper = response.getEntity(PermissionTicket.class);
+                final String ticket = ticketWrapper.getTicket();
+                LOG.debug("RS returns permission ticket: " + ticket);
+                final RptAuthorizationRequest authorizationRequest = new RptAuthorizationRequest(rpt, ticket);
 
-            final Configuration c = Configuration.getInstance();
-            LOG.debug("Try to authorize RPT with ticket...");
-            final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration());
-            final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
-                    "Bearer " + p_aat,
-                    c.amHost(),
-                    authorizationRequest);
-            if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
-                LOG.debug("RPT is authorized.");
-                return true;
+                final Configuration c = Configuration.getInstance();
+                LOG.debug("Try to authorize RPT with ticket...");
+                final RptAuthorizationRequestService rptAuthorizationService = UmaClientFactory.instance().createAuthorizationRequestService(CommonUtils.getUmaConfiguration(), Uma.getClientExecutor());
+                final RptAuthorizationResponse clientAuthorizationResponse = rptAuthorizationService.requestRptPermissionAuthorization(
+                        "Bearer " + aat,
+                        c.amHost(),
+                        authorizationRequest);
+                if (clientAuthorizationResponse != null && !Strings.isNullOrEmpty(clientAuthorizationResponse.getRpt())) {
+                    LOG.debug("RPT is authorized.");
+                    return true;
+                }
+            } else {
+                LOG.debug("Authorization is possible only if status is FORBIDDEN. Response status: " + response.getResponseStatus() + " message: " + failureResponse.getMessage());
             }
-        } else {
-            LOG.debug("Authorization is possible only if status is FORBIDDEN. Response status: " + response.getResponseStatus() + " message: " + p_failureResponse.getMessage());
+            LOG.debug("Failed to authorize RPT.");
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
-        LOG.debug("Failed to authorize RPT.");
+
         return false;
     }
 
