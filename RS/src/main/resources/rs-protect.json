@@ -1,6 +1,6 @@
 {"resources":[
     {
-        "path":"/phone",
+        "path":"/ws/phone",
         "conditions":[
             {
                 "httpMethods":["GET"],

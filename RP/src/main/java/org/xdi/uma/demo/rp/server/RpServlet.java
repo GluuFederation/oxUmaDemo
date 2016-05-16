@@ -38,12 +38,11 @@ public class RpServlet extends RemoteServiceServlet implements Service {
         try {
             loadUmaConfiguration();
 
-            Token aat = clientAuthenticationAat();
+            Token aat = clientAuthenticationAat(false);
             if (aat == null) {
                 LOG.error("Failed to obtain AAT via client authentication.");
                 throw new ServletException();
             }
-
         } catch (Exception e) {
             LOG.error("Failed to start RP Demo Application. " + e.getMessage(), e);
             throw new ServletException(e);
@@ -281,12 +280,18 @@ public class RpServlet extends RemoteServiceServlet implements Service {
     }
 
     public Token clientAuthenticationAat() {
+        return clientAuthenticationAat(true);
+    }
+
+    public Token clientAuthenticationAat(boolean store) {
         try {
             final Configuration c = Configuration.getInstance();
             LOG.trace("Try to obtain AAT token...");
             final Token aatToken = CommonUtils.requestAat(c.getTokenUrl(), c.getUmaAatClientId(), c.getUmaAatClientSecret());
             if (aatToken != null) {
-                storeAat(aatToken);
+                if (store) {
+                    storeAat(aatToken);
+                }
                 LOG.trace("AAT token is successfully obtained.");
                 return aatToken;
             }
