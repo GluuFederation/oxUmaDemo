@@ -47,12 +47,12 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
             LOG.info("Protection configuration: " + IOUtils.toString(inputStream(PROTECTION_CONFIGURATION_FILE_NAME)));
 
-            ServiceProvider serviceProvider = new ServiceProvider(configuration);
-            ObtainPatProvider patProvider = new ObtainPatProvider(serviceProvider);
+            ServiceProvider serviceProvider = new ServiceProvider(configuration.getOpHost());
+            ObtainPatProvider patProvider = new ObtainPatProvider(serviceProvider, configuration);
             ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider, serviceProvider);
 
             resourceRegistrar.register(values);
-            LOG.info("Resources are registered at AS: " + configuration.getUmaWellknownEndpoint());
+            LOG.info("Resources are registered at AS: " + configuration.getOpHost());
 
             StaticStorage.put(PatProvider.class, patProvider);
             StaticStorage.put(ResourceRegistrar.class, resourceRegistrar);

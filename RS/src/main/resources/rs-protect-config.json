@@ -1,5 +1,5 @@
 {
-    "well_known_endpoint":"https://kantara.gluu.org/.well-known/uma-configuration",
+    "op_host":"https://kantara.gluu.org",
     "pat_client_id":"@!5432.93A5.147D.F693!0001!4697.0299!0008!EC8F.77DC",
     "pat_client_secret":"7a5f0584-7d9c-4ae4-8a4d-73960a764a35",
     "trust_all":true
