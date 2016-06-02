@@ -48,8 +48,8 @@ public class RsServlet extends RemoteServiceServlet implements Service {
             LOG.info("Protection configuration: " + IOUtils.toString(inputStream(PROTECTION_CONFIGURATION_FILE_NAME)));
 
             ServiceProvider serviceProvider = new ServiceProvider(configuration);
-            PatProvider patProvider = new PatProvider(serviceProvider);
-            ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider);
+            ObtainPatProvider patProvider = new ObtainPatProvider(serviceProvider);
+            ResourceRegistrar resourceRegistrar = new ResourceRegistrar(patProvider, serviceProvider);
 
             resourceRegistrar.register(values);
             LOG.info("Resources are registered at AS: " + configuration.getUmaWellknownEndpoint());
@@ -82,7 +82,7 @@ public class RsServlet extends RemoteServiceServlet implements Service {
 
     @Override
     public String obtainNewPat() {
-        return StaticStorage.get(PatProvider.class).renewPat();
+        return StaticStorage.get(ObtainPatProvider.class).renewPat();
     }
 
     @Override
